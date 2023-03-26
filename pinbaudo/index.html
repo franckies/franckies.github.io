@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+    <link rel="shortcut icon" href="images/icon.ico">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Pinball</title>
+    <link type="text/css" href="./css/style.css" rel="stylesheet">
+    <script type="text/javascript" src="js/webgl-obj-loader.min.js"></script>
+    <script type="text/javascript" src="js/utils.js"></script>
+    <script type="text/javascript" src="js/collisions.js"></script>
+    <script type="text/javascript" src="js/ball.js"></script>
+    <script type="text/javascript" src="js/parallelepipeds.js"></script>
+    <script type="text/javascript" src="js/bumper.js"></script>
+    <script type="text/javascript" src="js/cylinder.js"></script>
+    <script type="text/javascript" src="js/surface.js"></script>
+    <script type="text/javascript" src="js/script.js"></script>
+
+</head>
+
+
+<body>
+  <center><canvas id="c"></canvas></center>
+
+<!--Command List!-->
+  <div id="legend">
+   <p>
+     <p><h2> Command List </h2></p>
+     <ul style="font-family: Courier New">
+       <li>Space bar: Spin the ball</li>
+       <li>Q: Move left palette</li>
+       <li>P: Move right palette</li>
+       <li>R: Reload the ball</li>
+       <li>Mouse: Move the camera</li>
+       <li>Double click: Reset camera position</li>
+
+     </ul>
+   </p>
+ </div>
+
+<div id="panel">
+ <td>
+ <p><h2> Control Panel </h2></p>
+ <b> Game speed</b>
+ <form>
+   <input type="radio" name="light" id="yesl" onchange="onRadioButtonChange(this.value);" value="1"> Slow <br/>
+   <input type="radio" name="light" onchange="onRadioButtonChange(this.value);" value="2" checked> Normal <br/>
+   <input type="radio" name="light" onchange="onRadioButtonChange(this.value);" value="3" > Fast <br/>
+ </form>
+ <br>
+ <b> Change ball color </b>
+ <div id="slider1">
+   <input type="color" id="favcolor" name="favcolor" value="#000000" onChange = "onColorChange(this.value)">
+   <br>
+ </div>
+ <br>
+ <b> Change Light Dir </b>
+ <div id="slider2">
+   <input type="range" min="0" max="360" step="1" value="50" onchange="onSliderChange1(this.value);"/> alpha
+   <input type="range" min="0" max="360" step="1" value="100" onchange="onSliderChange2(this.value);"/> beta
+   <br>
+ </div>
+ <br>
+ <div id="slider3">
+   <b> Change Light color </b><br>
+    <input type="color" id="lightcol" value="#ffffff" onChange = "onLightColorChange(this.value)">
+    <br>
+ </div>
+ <br>
+ <b>Change Ambient Light</b>
+ <div id="slider4">
+   <input type="color" id="favcolor" name="favcolor" value="#757575" onChange = "onAmbientColorChange(this.value)">
+   <br>
+ </div>
+ <br>
+  <b> Enable Textures </b><br>
+   <input type="checkbox" id="chbx" onclick="onTexturesChecked(this.checked);" checked/> Textures<br/>
+   <br>
+   <b> Enable sound </b><br>
+     <input type="checkbox" id="chbx" onclick="onSoundBoxChange(this.checked);" checked/> Sound ON<br/>
+ </td>
+</div>
+
+<div id = "FPSpanel">
+  <p>FPS:  </p>
+  <p id= "FPS">  </p>
+</div>
+
+<div id = "Lost">
+  <div id = "LostGame">
+  <h1> Game Lost </h1>
+  </div>
+  <div id = "SpaceBar">
+  <h1> SpaceBar to restart </h1>
+  </div>
+</div>
+
+<div id = "Loading">
+  <h1> Loading... </h1>
+</div>
+
+<!--Audios!-->
+<audio id="audioPalette" src="audio/palettes.wav" ></audio>
+<audio id="audioBumper" src="audio/bumper.wav" ></audio>
+<audio id="audioReloader" src="audio/reloader.wav" ></audio>
+<audio id="audioLoose" src="audio/loose.wav" ></audio>
+</body>
+
+</html>
+
+<script>
+function HEX2RGB(hex) {
+        "use strict";
+        if (hex.charAt(0) === '#') {
+            hex = hex.substr(1);
+        }
+        if ((hex.length < 2) || (hex.length > 6)) {
+            return false;
+        }
+        var values = hex.split(''),
+            r,
+            g,
+            b;
+
+        if (hex.length === 2) {
+            r = parseInt(values[0].toString() + values[1].toString(), 16);
+            g = r;
+            b = r;
+        } else if (hex.length === 3) {
+            r = parseInt(values[0].toString() + values[0].toString(), 16);
+            g = parseInt(values[1].toString() + values[1].toString(), 16);
+            b = parseInt(values[2].toString() + values[2].toString(), 16);
+        } else if (hex.length === 6) {
+            r = parseInt(values[0].toString() + values[1].toString(), 16);
+            g = parseInt(values[2].toString() + values[3].toString(), 16);
+            b = parseInt(values[4].toString() + values[5].toString(), 16);
+        } else {
+            return false;
+        }
+        return [r, g, b];
+    }
+
+function onRadioButtonChange(value){
+  if(value ==1){k_dissip = 0.5;}
+  if(value ==2){k_dissip = 0.8;}
+  if(value ==3){k_dissip = 1.0;}
+}
+function onLightColorChange(value){
+  let result = HEX2RGB(value);
+  var r = result[0]/255.0;
+  var g = result[1]/255.0;
+  var b = result[2]/255.0;
+  directionalLightColor = [r,g,b];
+}
+function onTexturesChecked(value){
+  if(value){texturesEnabled = true;}
+  if(!value){texturesEnabled = false;}
+}
+function onSoundBoxChange(value){
+  if(value){soundON = true;}
+  if(!value){soundON = false;}
+}
+function onColorChange(value){
+  let result = HEX2RGB(value);
+  var r = result[0]/255.0;
+  var g = result[1]/255.0;
+  var b = result[2]/255.0;
+  ballCol = [r,g,b];
+}
+function onAmbientColorChange(value){
+  let result = HEX2RGB(value);
+  var r = result[0]/255.0;
+  var g = result[1]/255.0;
+  var b = result[2]/255.0;
+  ambientLight = [r,g,b];
+}
+function onSliderChange1(value){
+  dirLightAlpha = -utils.degToRad(value);
+}
+function onSliderChange2(value){
+  dirLightBeta = -utils.degToRad(value);
+}
+before = 0.0;
+requestAnimationFrame(
+  function loop(){
+      now=Date.now();
+      fps=Math.round(1000/(now-before));
+      before=now;
+      requestAnimationFrame(loop);
+      if(nFrame % 10 == 0){ document.getElementById("FPS").innerHTML = fps; }
+  })
+function pageLoader(){
+  if(pageReady){
+    document.getElementById("Loading").style.visibility = "hidden";
+    document.getElementById("c").style.visibility = "visible";
+    document.getElementById("panel").style.visibility = "visible";
+    document.getElementById("legend").style.visibility = "visible";
+    document.getElementById("FPSpanel").style.visibility = "visible";
+  }
+
+}
+</script>
