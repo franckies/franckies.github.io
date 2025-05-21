@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head><link rel="icon" href="/favicon_main.svg"><meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+<meta http-equiv="x-ua-compatible" content="ie=edge" /><meta property="og:url"  content="https://franckies.github.io/projects/ecommerce-api/" />
+    <meta property="og:type" content="article" /><meta property="og:title" content="eCommerce API" /><meta property="og:description" content="A RESTful API for a microservice eCommerce application based on Spring Boot and Kotlin." /><meta property="og:image:width"  content="600" />
+        <meta property="og:image:height" content="312" /><meta property="og:image" content="https://franckies.github.io/projects/ecommerce-api/images/cover_hua0e1bb4c6767782f34710605ec7fb44a_12708_600x0_resize_q75_box.jpg" /><title>Francesco Semeraro - Personal website and blog - eCommerce API</title>
+
+    
+<link href="https://fonts.googleapis.com/css?family=Open&#43;Sans" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Open&#43;Sans" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Open&#43;Sans" rel="stylesheet"><link rel="stylesheet" type="text/css" href="/css/style.6fd7fa42c7b7fe49cfeceeed650d33cb8d1cdbfe842e514a22e57a6b712729aa.css" integrity="sha256-b9f6Qse3/knP7O7tZQ0zy40c2/6ELlFKIuV6a3EnKao=">
+<link rel="stylesheet" type="text/css" href="/css/monokai-sublime.9.15.8.min.91376415864fdd3a92be524052267afece4bdb1bb8c6c754f5e60c5ac28e93be.css" integrity="sha256-kTdkFYZP3TqSvlJAUiZ6/s5L2xu4xsdU9eYMWsKOk74=">
+<link rel="stylesheet" type="text/css" href="/css/all.min.2d91c07e15fc26f2697117b326256c0a2b0586dd12a15c622a53cd47a9e54a1d.css" integrity="sha256-LZHAfhX8JvJpcRezJiVsCisFht0SoVxiKlPNR6nlSh0=">
+<link rel="stylesheet" type="text/css" href="/css/refresh.14a12fb7813ddba2888e4b3b9416cf53c14139b12f6c4f24fb63c8720d9599f7.css" integrity="sha256-FKEvt4E926KIjks7lBbPU8FBObEvbE8k&#43;2PIcg2Vmfc=">
+<link rel="stylesheet" type="text/css" href="/css/devicon.min.149016fbf45c8bc157d6f55ce3ee875feaa3f90446bf7d151fbc16a9f21a8859.css" integrity="sha256-FJAW&#43;/Rci8FX1vVc4&#43;6HX&#43;qj&#43;QRGv30VH7wWqfIaiFk=">
+    
+
+  </head>
+  <body>
+     
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6L38PPSN83"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6L38PPSN83');
+</script>
+    <div id="preloader">
+      <div id="status"></div>
+    </div><nav class="navbar is-fresh is-transparent no-shadow" role="navigation" aria-label="main navigation">
+  <div class="container">
+    <div class="navbar-brand">
+
+      
+      
+      
+      <a class="navbar-item">
+        <div class="menu-icon-wrapper left-menu-icon-wrapper" style="visibility: visible;">
+          <svg width="1000px" height="1000px">
+            <path class="path1" d="M 300 400 L 700 400 C 900 400 900 750 600 850 A 400 400 0 0 1 200 200 L 800 800"></path>
+            <path class="path2" d="M 300 500 L 700 500"></path>
+            <path class="path3" d="M 700 600 L 300 600 C 100 600 100 200 400 150 A 400 380 0 1 1 200 800 L 800 200"></path>
+          </svg>
+          <button id="menu-icon-trigger" class="menu-icon-trigger"></button>
+        </div>
+        <div class="navbar-item left-menu-icon-wrapper">
+          Tags
+        </div>
+      </a>
+
+      <div class="navbar-item is-expanded"></div>
+      <a class="navbar-item is-hidden-desktop">  
+        <div data-target="navbar-menu" class="navbar-item right-menu-icon-wrapper is-hidden-desktop">
+          Menu
+        </div>
+        <div data-target="navbar-menu" class="menu-icon-wrapper right-menu-icon-wrapper" style="visibility: visible;">
+          <svg width="1000px" height="1000px">
+            <path class="path1" d="M 300 400 L 700 400 C 900 400 900 750 600 850 A 400 400 0 0 1 200 200 L 800 800"></path>
+            <path class="path2" d="M 300 500 L 700 500"></path>
+            <path class="path3" d="M 700 600 L 300 600 C 100 600 100 200 400 150 A 400 380 0 1 1 200 800 L 800 200"></path>
+          </svg>
+          <button id="menu-icon-trigger" class="menu-icon-trigger"></button>
+        </div>
+      </a>
+    </div><div id="navbar-menu" class="navbar-menu is-static">
+      
+      <div class="navbar-end">
+        
+          <a href="/" class="navbar-item is-secondary">Homepage</a><a href="/about/" class="navbar-item is-secondary">About Me</a><a href="/projects/" class="navbar-item is-secondary">Projects</a><a href="/seminars/" class="navbar-item is-secondary">Seminars</a>
+            <div class="navbar-item has-dropdown is-hoverable">
+              <a href="/blog/" class="navbar-link">Blog</a>
+              <div class="navbar-dropdown">
+                <a href="/blog/docker/" class="navbar-item">Docker</a><a href="/blog/kubernetes/" class="navbar-item">Kubernetes</a></div>
+            </div>
+        
+        
+        
+        
+        
+        
+        
+      </div>
+    </div>
+  </div>
+</nav>
+<nav id="navbar-clone" class="navbar is-fresh is-transparent" role="navigation" aria-label="main navigation">
+  <div class="container">
+      <div class="navbar-brand">
+  
+        
+        
+        
+        <a class="navbar-item">
+          <div class="menu-icon-wrapper left-menu-icon-wrapper" style="visibility: visible;">
+            <svg width="1000px" height="1000px">
+              <path class="path1" d="M 300 400 L 700 400 C 900 400 900 750 600 850 A 400 400 0 0 1 200 200 L 800 800"></path>
+              <path class="path2" d="M 300 500 L 700 500"></path>
+              <path class="path3" d="M 700 600 L 300 600 C 100 600 100 200 400 150 A 400 380 0 1 1 200 800 L 800 200"></path>
+            </svg>
+            <button id="menu-icon-trigger" class="menu-icon-trigger"></button>
+          </div>
+          <div class="navbar-item left-menu-icon-wrapper">
+            Tags
+          </div>
+        </a>
+  
+        <div class="navbar-item is-expanded"></div>
+        <a class="navbar-item is-hidden-desktop">  
+          <div data-target="cloned-navbar-menu" class="navbar-item right-menu-icon-wrapper is-hidden-desktop">
+            Menu
+          </div>
+          <div data-target="cloned-navbar-menu" class="menu-icon-wrapper right-menu-icon-wrapper" style="visibility: visible;">
+            <svg width="1000px" height="1000px">
+              <path class="path1" d="M 300 400 L 700 400 C 900 400 900 750 600 850 A 400 400 0 0 1 200 200 L 800 800"></path>
+              <path class="path2" d="M 300 500 L 700 500"></path>
+              <path class="path3" d="M 700 600 L 300 600 C 100 600 100 200 400 150 A 400 380 0 1 1 200 800 L 800 200"></path>
+            </svg>
+            <button id="menu-icon-trigger" class="menu-icon-trigger"></button>
+          </div>
+        </a>
+      </div><div id="cloned-navbar-menu" class="navbar-menu is-static">
+        <div class="navbar-end"><a href="/" class="navbar-item is-secondary">Homepage</a><a href="/about/" class="navbar-item is-secondary">About Me</a><a href="/projects/" class="navbar-item is-secondary">Projects</a><a href="/seminars/" class="navbar-item is-secondary">Seminars</a><div class="navbar-item has-dropdown is-hoverable">
+                <a href="/blog/" class="navbar-link">Blog</a>
+                <div class="navbar-dropdown">
+                  <a href="/blog/docker/" class="navbar-item">Docker</a><a href="/blog/kubernetes/" class="navbar-item">Kubernetes</a></div>
+              </div>
+          
+          
+          
+
+          
+          
+          
+        
+        </div>
+      </div>
+    </div>
+  </nav>
+<section class="section is-medium">
+  <div class="container">
+    <div class="columns">
+      <div class="column is-centered-tablet-portrait">
+        <h1 class="title is-2 section-title">eCommerce API</h1>
+        <h5 class="subtitle is-5 is-muted"></h5>
+        <div class="divider"></div>
+        
+        <section class="section content has-text-justified">
+          <h1 id="overview">Overview</h1>
+<p>The goal of the <a href="https://github.com/franckies/ecommerce-api">presented project</a> is to build a RESTful
+API for an eCommerce system exploiting the Spring Boot
+framework and based on the novel paradigm of distributed
+microservices.
+This architecture allows flexibility in deploying each basic
+component (i.e.μS) in a different location, either a physical
+server or a cloud-hosted virtual machine. This advantage
+comes at the cost of an error-prone (network) communication among each infrastructural node, while the traditional
+monolithicapproach is more straightforward in terms of
+communication (i.e. simple method invocation or IPC).</p>
+<h1 id="architecture">Architecture</h1>
+<p>The web application is composed of the following microservices:</p>
+<ul>
+<li>CatalogService: customers and admins interact only
+with thisμS that forwards the requests to the internal
+facilities;</li>
+<li>OrderService: responsible for handling the order workflow and confirming it when all the conditions are
+satisfied (i.e. money and products availability);</li>
+<li>WalletService: handles the information about customers’
+money and transactions;</li>
+<li>WarehouseService: handles the products in any warehouse and it is in charge of picking up the items;</li>
+<li>MailingService: handles the mailing information for
+updating customers and admins about the orders.</li>
+</ul>
+<p>This figure explains the data responsibility (i.e. which piece of
+information is held in eachμS) and the interactions among
+the components.
+<img src="images/GeneralSchema.png" alt="General schema"></p>
+<h1 id="functional-requirements">Functional Requirements</h1>
+<p>All the functional requirements and their high-level implementation are depicted in the above picture. Three actors can be defined:</p>
+<ul>
+<li>
+<p>Anonymous reader: represents a non-authenticated
+user, which canquery the catalog(1) and retrieve a
+list of all the available products together with their price,
+quantity, description, picture, and category. Technically,
+this is done through a GET request on the specific endpoint exposed by the CatalogService, which in turn performs a GET request on an endpoint exposed by the WarehouseService, which is in charge of storing products’ information.</p>
+</li>
+<li>
+<p>Customer: represents an authenticated customer, extending the requirements already available for an anonymous reader. A customer can login(2) using his own
+credentials. A convenient way to handle the authentication mechanism is to store in-memory users. He can
+submit a request tocreate an order(3). This operation comes in two different flavours:synchronousand
+asynchronous. In both cases, two main controls have
+to be performed before confirming the order: checking
+if the user has enough money in his wallet and if
+there are enough products. When the order is confirmed,
+the customer receives the order identifier, which can
+also be used toquery the customer’s orders (4) at
+any time through a specific endpoint exposed by the
+CatalogService. Notice that when the order is displayed
+to the customer, it will be split into as many parts as
+the number of deliveries associated with it. Each part of
+the order will have its own status, giving the user more
+fine-grained control over the tracking. If an order has
+been confirmed but not yet shipped, the customer can
+decide todelete the order(5). Similar to what is said
+for the order creation, also the order cancellation can be
+performed synchronously or asynchronously. Whenever
+an order is confirmed, failed, or deleted, the customer
+will receive an email notifying the event. In the end,
+a customer can query his own wallet (6), to verify
+the remaining amount of money and all the performed
+transactions.</p>
+</li>
+<li>
+<p>Admin: represents a user authenticated as a system
+administrator, extending the requirements already available for an anonymous reader. As for the customer,
+the admin can login (7) exploiting the same in-
+memory user management system. An admin can also
+query the admin catalog(8), which contains more detailed information about where each product is stored
+(i.e. in which warehouse), and the alarm levelof a
+given product, indicating when the stock is running
+out of a product; when a threshold is exceeded, an
+email is sent to the admin notifying the event. Admins
+can alsoedit a product(9), edit an order(10) and
+recharge the wallet of an user(11).
+A detailed view of all the exposed endpoints of eachμS is
+accessible in the documentation of the repository.</p>
+</li>
+</ul>
+<p><img src="images/functional.jpg" alt="Functional requirements"></p>
+<h1 id="distributed-transactions">Distributed transactions</h1>
+<p>The main drawback of the microservice architecture is the
+difficulties encountered in handlingdistributed transactions.
+Those are sequence of operations that can be either all
+correct (i.e. commit) or just a single failure requires to
+restore the previous situation (i.e.rollback). The Use Case 3,
+described above, is an example of distributed transaction
+because it involves several DB updates, such as money
+withdrawal, products reservation, and shipping tracking. All
+those information has to be coherent along all the involved
+MongoDB collections, even though they are handled by
+differentμSs.
+One way to implement distributed transactions across
+multiple μSs is offered by the SAGA paradigm. If an
+operation within a given transaction fails, the SAGA relies
+on the notion ofcompensating transactions, which means
+each local operation must be able to be reverted running
+another action.
+The SAGA object is created by CatalogService and
+composed of an ID, that is a unique identifier representing
+the order, the user ID, and a purchase list (map of product,
+quantity, and price). EachμS implements a local operational
+logger that contains all the information needed in case of
+rollback. The SAGA paradigm has been implemented in
+both the orchestrator and choreography flavors.</p>
+<h3 id="a-synchronous-orchestration">A. Synchronous orchestration</h3>
+<p>In the synchronous implementation of the order creation
+SAGA, the communication between the services is implemented with REST API. The CatalogService starts the order
+SAGA, delegating the role of the synchronous orchestrator to
+the OrderService, which is in charge of sequentially requesting operations to the WalletService and WarehouseService.
+In the above figure is shown a high-level representation of how the
+μSs communicate with each other. After receiving an order
+request (1), the OrderService requests the WalletService to
+perform a transaction (2) on the user’s wallet and lock the
+money; if the operation is successful (3), it queries the
+WarehouseService (4) to provide the list of deliveries to
+be shipped (5) and then it commits the transaction on the
+WalletService (6). The OrderService then sends a confirmation mail to the user (7), returns the order, and starts the
+deliveries (8). If any of these operations fail, the OrderService
+sends a rollback request providing the SAGA ID to the
+WalletService and WarehouseService, returning also an error
+to the CatalogService.
+In this implementation OrderService is a single point of
+failuresince both the commit and rollback operations are
+completely handled by this service.</p>
+<p><img src="images/SyncSchema.png" alt="Sync schema"></p>
+<h3 id="b-asynchronous-choreography">B. Asynchronous choreography</h3>
+<p>On the other hand, in the asynchronous implementation
+of the order creation SAGA, the communication between
+the services is implemented throughKafka. This technology
+implements a publishsubscribe patternand it involves a
+centralbrokerable to notify all the interestedμSs.
+This even-based communication style enforces an asynchronous paradigm in which every event is triggered by a
+μS and every other entity knows how to react properly.
+The pictures shows how the SAGA is initialized by the CatalogService (who creates its unique ID) and it is notified
+on thecreate_ordertopic. All the interested services
+react to this request by predisposing the order (i.e. OrderService) or by checking internal availability (i.e. WalletService and WarehouseService). The latter entities notify the
+correct execution of the withdrawal (onwallet_okand
+products_oktopics respectively) or rollback the entire
+transaction. In this scenario, the OrderService has only the
+responsibility of committing the transaction when all three
+conditions are satisfied and properly communicated on their
+specific topics. Beware that this highly parallelized solution
+increases the speed of the creation, but does not provide any
+guarantees on the sequentiality of the events. An alternative solution would be letting the OrderService starting the
+SAGA, gaining in a stricter order of arrival, but falling back
+to an orchestrator-like role (with all the previously presented
+issues).
+Therollbacktopic is relevant for all the three services
+actively involved in the transaction. The content of this event
+is the ID of the SAGA to dismiss. Thanks to the internal
+operational logging, each μS is capable of restoring the
+previous status (i.e. undo the operation) without needing any
+further information.
+The explicit deletion of an order from a customer is overlapping, at a practical level, with the rollback operation (i.e.
+all the money and products have to be restored), but it is
+semantically different and requires an initial check on the
+actual existence of the specified order. For this reason, in
+this situation, the workflow is forced to synchronously reach
+the OrderService (owning the order data) which has the
+responsibility to emit on thecancel_ordertopic.
+All the Kafka listeners have been implemented idempotent
+through a log database: all the operations are recorded so
+that if a request arrives multiple times it is executed only
+once. This avoids problems in presence of eventual duplicate
+messages.
+It is possible to notice that in the choreography there is a
+wide degree of freedom; an event is notified and then each
+interested listener has to react properly according to its own
+internal rules. There is no central command room, but a clear
+and balanced separation of responsibilities.</p>
+<p><img src="images/AsyncSchema.png" alt="Async schema"></p>
+<h1 id="constraints">Constraints</h1>
+<h3 id="a-service-fails">A. Service fails</h3>
+<p>The proposed solution ensures the proper functioning of
+the system even in presence of crashes of the services
+while performing the operation. This behavior is obtained
+applying the write ahead logging technique: any change in
+the database is preceded by storing a record of the performed
+action. In case of failures, the services check their logs at the
+restart and they perform aconsistency check(e.g. performing
+a rollback if there are pending operations).</p>
+<h3 id="b-logic-fails">B. Logic fails</h3>
+<p>In order to prevent logic fails, some considerations have
+been done when designing the application. First, the local
+database of each microservice is locked when performing the
+local operations. Notice that this is different from a global
+lock during the whole order placing transaction, which would
+be not efficient at all. In this way, if two customers try to
+order the same last product in stock, only one will succeed.
+The assumption behind this strategy is that each microservice
+has its own instance of the database.
+Moreover, a unique SAGA has been associated with each
+order: by doing so, we avoid conflicts within orders from
+the same user (e.g. if a customer places two orders without
+enough funds for the second, only the first one succeeds).</p>
+<h1 id="security-infrastructure-and-authentication">Security infrastructure and authentication</h1>
+<p>The application is enriched with security mechanisms
+using the Spring Security framework.
+The exposed CatalogService checks the permissions on all
+the operations (except for the request of the available products that can be done also by anonymous readers). On the
+other hand, all the other internal microservices are assumed
+to be trusted and all of their operations are done without
+authentication.
+The Spring in-memory authentication is implemented, internally storing and validating users’ credentials (i.e. username
+and password).
+The users can have two roles, ADMIN and CUSTOMER: the
+former is allowed to do any operation, while the latter can
+only perform only a subset of them.</p>
+<h1 id="deployment">Deployment</h1>
+<p>In order to provide a real-case scenario, we envelop our
+entire web application inside a docker-compose (each image
+stored on Docker Hub) for being easily deployed in every
+virtualization environment. Each microservice is compiled in
+a JAR file and inserted in a docker image (together with
+its configuration file). The overall compose structure also
+contains the MongoDB and Kafka dockers, specifying an
+internal network and enforcing the proper booting order.</p>
+<h1 id="the-team">The team</h1>
+<p>This project was carried out for the Advanced Programming course by Biondo Andrea, Chiapello Nicolò, Martone Raffaele, Semeraro Francesco.</p>
+
+        </section>
+      </div>
+    </div>
+  </div>  
+  </section>
+<footer class="footer footer-dark">
+  <div class="container">
+    <div class="columns">
+      <div class="column">
+        <img src="/footer.svg" alt="">
+        
+      </div>
+      
+    <div class="column">
+        <div class="footer-column">
+          <div class="footer-header">
+              <h3>Website</h3>
+          </div>
+          <ul class="link-list"><li><a href="/credits/">
+                  <span class="icon"><i class="fa fa-cube"></i></span>
+                  Credits
+                </a></li>
+            <li><a href="/tags/">
+                <span class="icon"><i class="fa fa-tag"></i></span> 
+                All Tags
+              </a></li>
+          </ul>
+        </div>
+      </div>
+    
+      
+      <div class="column">
+        <div class="footer-column">
+          <div class="footer-header">
+              <h3>Contacts</h3>
+          </div>
+          <ul class="link-list">
+            
+            <li>
+              <a href="https://www.linkedin.com/in/francesco-semeraro-09b305190" target="_blank">
+                <span class="icon"><i class="fab fa-linkedin"></i></span>
+                
+                  LinkedIn
+                
+              </a>
+            </li>
+            
+            
+            <li>
+              <a href="https://github.com/franckies" target="_blank">
+                <span class="icon"><i class="fab fa-github-square"></i></span>
+                
+                  Github
+                
+              </a>
+            </li>
+                         
+            
+            <li>
+              <a href="mailto:fk.semeraro@gmail.com" target="_blank">
+                <span class="icon"><i class="fa fa-envelope"></i></span>
+                
+                  Email
+                
+              </a>
+            </li>
+            
+                   
+                   
+            
+                   
+          </ul>
+        </div>
+      </div>
+      
+
+      
+      <div class="column">
+        <div class="footer-column">
+          <div class="footer-header">
+              <h3>Copyright</h3>
+          </div>
+          <ul class="link-list">
+            <li>
+              <a>
+                <span class="icon"><i class="fa fa-copyright"></i></span>
+                FS - 2021
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      
+
+    </div>
+  </div>
+</footer>
+    <div id="backtotop"><a href="#"></a></div><div class="sidebar scroll">
+  <div class="sidebar-header"><img src="/sidebar.svg" alt="">
+    
+    <a class="sidebar-close" href="javascript:void(0);">
+      <i data-feather="x"></i>
+    </a>
+  </div>
+  <div class="inner">
+    <ul class="sidebar-menu">
+      <li class="no-children"><a href="/tags/"><div class="columns">
+              <table width="100%">  
+                <tr>
+                  <td class="">
+                    <span class="icon"><i class="fa fa-cubes"></i></span>
+                    All Tags
+                  </td>
+                  <td class="has-text-right" >
+                      
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </a>
+      <li class="no-children">
+          <a href="/tags/cloud">
+            <div class="columns">
+              
+              <table width="100%">  
+                  <tr>
+                    <td class=""><span class="icon"><i class="fa fa-cube"></i></span>cloud</td>
+                    <td class="has-text-right" >
+                        <div class="tag-number">5</div>
+                      
+                    </td>
+                    
+                  </tr>
+              </table>
+              
+            </div>
+          </a>
+      </li>
+      <li class="no-children">
+          <a href="/tags/azure">
+            <div class="columns">
+              
+              <table width="100%">  
+                  <tr>
+                    <td class=""><span class="icon"><i class="fa fa-cube"></i></span>azure</td>
+                    <td class="has-text-right" >
+                        <div class="tag-number">3</div>
+                      
+                    </td>
+                    
+                  </tr>
+              </table>
+              
+            </div>
+          </a>
+      </li>
+      <li class="no-children">
+          <a href="/tags/docker">
+            <div class="columns">
+              
+              <table width="100%">  
+                  <tr>
+                    <td class=""><span class="icon"><i class="fa fa-cube"></i></span>docker</td>
+                    <td class="has-text-right" >
+                        <div class="tag-number">2</div>
+                      
+                    </td>
+                    
+                  </tr>
+              </table>
+              
+            </div>
+          </a>
+      </li>
+      <li class="no-children">
+          <a href="/tags/kubernetes">
+            <div class="columns">
+              
+              <table width="100%">  
+                  <tr>
+                    <td class=""><span class="icon"><i class="fa fa-cube"></i></span>kubernetes</td>
+                    <td class="has-text-right" >
+                        <div class="tag-number">2</div>
+                      
+                    </td>
+                    
+                  </tr>
+              </table>
+              
+            </div>
+          </a>
+      </li>
+      <li class="no-children">
+          <a href="/tags/terraform">
+            <div class="columns">
+              
+              <table width="100%">  
+                  <tr>
+                    <td class=""><span class="icon"><i class="fa fa-cube"></i></span>terraform</td>
+                    <td class="has-text-right" >
+                        <div class="tag-number">2</div>
+                      
+                    </td>
+                    
+                  </tr>
+              </table>
+              
+            </div>
+          </a>
+      </li>
+      <li class="no-children">
+          <a href="/tags/api">
+            <div class="columns">
+              
+              <table width="100%">  
+                  <tr>
+                    <td class=""><span class="icon"><i class="fa fa-cube"></i></span>api</td>
+                    <td class="has-text-right" >
+                        <div class="tag-number">1</div>
+                      
+                    </td>
+                    
+                  </tr>
+              </table>
+              
+            </div>
+          </a>
+      </li>
+      <li class="no-children">
+          <a href="/tags/ar">
+            <div class="columns">
+              
+              <table width="100%">  
+                  <tr>
+                    <td class=""><span class="icon"><i class="fa fa-cube"></i></span>ar</td>
+                    <td class="has-text-right" >
+                        <div class="tag-number">1</div>
+                      
+                    </td>
+                    
+                  </tr>
+              </table>
+              
+            </div>
+          </a>
+      </li>
+      <li class="no-children">
+          <a href="/tags/c#">
+            <div class="columns">
+              
+              <table width="100%">  
+                  <tr>
+                    <td class=""><span class="icon"><i class="fa fa-cube"></i></span>c#</td>
+                    <td class="has-text-right" >
+                        <div class="tag-number">1</div>
+                      
+                    </td>
+                    
+                  </tr>
+              </table>
+              
+            </div>
+          </a>
+      </li>
+      <li class="no-children">
+          <a href="/tags/devops">
+            <div class="columns">
+              
+              <table width="100%">  
+                  <tr>
+                    <td class=""><span class="icon"><i class="fa fa-cube"></i></span>devops</td>
+                    <td class="has-text-right" >
+                        <div class="tag-number">1</div>
+                      
+                    </td>
+                    
+                  </tr>
+              </table>
+              
+            </div>
+          </a>
+      </li>
+      <li class="no-children">
+          <a href="/tags/flask">
+            <div class="columns">
+              
+              <table width="100%">  
+                  <tr>
+                    <td class=""><span class="icon"><i class="fa fa-cube"></i></span>flask</td>
+                    <td class="has-text-right" >
+                        <div class="tag-number">1</div>
+                      
+                    </td>
+                    
+                  </tr>
+              </table>
+              
+            </div>
+          </a>
+      </li>
+      <li class="no-children">
+          <a href="/tags/hmd">
+            <div class="columns">
+              
+              <table width="100%">  
+                  <tr>
+                    <td class=""><span class="icon"><i class="fa fa-cube"></i></span>hmd</td>
+                    <td class="has-text-right" >
+                        <div class="tag-number">1</div>
+                      
+                    </td>
+                    
+                  </tr>
+              </table>
+              
+            </div>
+          </a>
+      </li>
+      <li class="no-children">
+          <a href="/tags/hololens">
+            <div class="columns">
+              
+              <table width="100%">  
+                  <tr>
+                    <td class=""><span class="icon"><i class="fa fa-cube"></i></span>hololens</td>
+                    <td class="has-text-right" >
+                        <div class="tag-number">1</div>
+                      
+                    </td>
+                    
+                  </tr>
+              </table>
+              
+            </div>
+          </a>
+      </li>
+      <li class="no-children">
+          <a href="/tags/javascript">
+            <div class="columns">
+              
+              <table width="100%">  
+                  <tr>
+                    <td class=""><span class="icon"><i class="fa fa-cube"></i></span>javascript</td>
+                    <td class="has-text-right" >
+                        <div class="tag-number">1</div>
+                      
+                    </td>
+                    
+                  </tr>
+              </table>
+              
+            </div>
+          </a>
+      </li>
+      <li class="no-children">
+          <a href="/tags/kotlin">
+            <div class="columns">
+              
+              <table width="100%">  
+                  <tr>
+                    <td class=""><span class="icon"><i class="fa fa-cube"></i></span>kotlin</td>
+                    <td class="has-text-right" >
+                        <div class="tag-number">1</div>
+                      
+                    </td>
+                    
+                  </tr>
+              </table>
+              
+            </div>
+          </a>
+      </li>
+      <li class="no-children">
+          <a href="/tags/microservices">
+            <div class="columns">
+              
+              <table width="100%">  
+                  <tr>
+                    <td class=""><span class="icon"><i class="fa fa-cube"></i></span>microservices</td>
+                    <td class="has-text-right" >
+                        <div class="tag-number">1</div>
+                      
+                    </td>
+                    
+                  </tr>
+              </table>
+              
+            </div>
+          </a>
+      </li>
+      <li class="no-children">
+          <a href="/tags/multicloud">
+            <div class="columns">
+              
+              <table width="100%">  
+                  <tr>
+                    <td class=""><span class="icon"><i class="fa fa-cube"></i></span>multicloud</td>
+                    <td class="has-text-right" >
+                        <div class="tag-number">1</div>
+                      
+                    </td>
+                    
+                  </tr>
+              </table>
+              
+            </div>
+          </a>
+      </li>
+      <li class="no-children">
+          <a href="/tags/multiprocess">
+            <div class="columns">
+              
+              <table width="100%">  
+                  <tr>
+                    <td class=""><span class="icon"><i class="fa fa-cube"></i></span>multiprocess</td>
+                    <td class="has-text-right" >
+                        <div class="tag-number">1</div>
+                      
+                    </td>
+                    
+                  </tr>
+              </table>
+              
+            </div>
+          </a>
+      </li>
+      <li class="no-children">
+          <a href="/tags/python">
+            <div class="columns">
+              
+              <table width="100%">  
+                  <tr>
+                    <td class=""><span class="icon"><i class="fa fa-cube"></i></span>python</td>
+                    <td class="has-text-right" >
+                        <div class="tag-number">1</div>
+                      
+                    </td>
+                    
+                  </tr>
+              </table>
+              
+            </div>
+          </a>
+      </li>
+      <li class="no-children">
+          <a href="/tags/raspberry_pi">
+            <div class="columns">
+              
+              <table width="100%">  
+                  <tr>
+                    <td class=""><span class="icon"><i class="fa fa-cube"></i></span>raspberry_pi</td>
+                    <td class="has-text-right" >
+                        <div class="tag-number">1</div>
+                      
+                    </td>
+                    
+                  </tr>
+              </table>
+              
+            </div>
+          </a>
+      </li>
+      <li class="no-children">
+          <a href="/tags/rest">
+            <div class="columns">
+              
+              <table width="100%">  
+                  <tr>
+                    <td class=""><span class="icon"><i class="fa fa-cube"></i></span>REST</td>
+                    <td class="has-text-right" >
+                        <div class="tag-number">1</div>
+                      
+                    </td>
+                    
+                  </tr>
+              </table>
+              
+            </div>
+          </a>
+      </li>
+      <li class="no-children">
+          <a href="/tags/webgl">
+            <div class="columns">
+              
+              <table width="100%">  
+                  <tr>
+                    <td class=""><span class="icon"><i class="fa fa-cube"></i></span>WebGL</td>
+                    <td class="has-text-right" >
+                        <div class="tag-number">1</div>
+                      
+                    </td>
+                    
+                  </tr>
+              </table>
+              
+            </div>
+          </a>
+      </li></ul>
+  </div>
+</div>
+<script src="/js/jquery-2.2.4.893e90f6230962e42231635df650f20544ad22affc3ee396df768eaa6bc5a6a2.js" integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI="></script>
+  <script src="/js/feather.4.22.0.1ab07abeb9975f283f6b5f29451981be680fbf77ea778f991d457511d210476a.js" integrity="sha256-GrB6vrmXXyg/a18pRRmBvmgPv3fqd4&#43;ZHUV1EdIQR2o="></script>
+  <script src="/js/modernizr-3.6.0.e013a1e54e3c19d83537ba42b900d34451e5e4b2e789be27a02ac9b152edb741.js" integrity="sha256-4BOh5U48Gdg1N7pCuQDTRFHl5LLnib4noCrJsVLtt0E="></script>
+  <script src="/js/refresh.62c1a9b7d85bcf4d944cd585a01dfa8fb15112a7d2cf9fb819db20493bfe7484.js" integrity="sha256-YsGpt9hbz02UTNWFoB36j7FREqfSz5&#43;4GdsgSTv&#43;dIQ="></script><script>
+  window.MathJax = {
+    loader: {
+      load: ['core', 'input/tex-base', 'output/chtml'],  
+      source: {
+        'core': '\/js\/mathjax\/core.d48fedf25c74c54fa6bf79646de92b02155872bdc4f5f7d0bbfc662523d8b4f5.js',
+        'input/tex-base': '\/js\/mathjax\/tex-base.1b68b8741dfc54e8f7222f88bea8ffcfc57ac54b2a2d8f4edf6800aa44d49441.js',
+        'output/chtml': '\/js\/mathjax\/chtml.926cd166e0f8c1f8a566a718d60c9c58a2b7142b156d30d5f02cec7c3b0ad60a.js',
+        'output/chtml/fonts/tex': '\/js\/mathjax\/tex_out.b8b2bb939c0dae84bf1390bfe6d32af13e83f647cdac01d544d2a7a517477e9d.js'
+      },
+    },
+    chtml: {
+      fontURL: '/fonts' 
+    },
+  };
+</script><script src="/js/mathjax/startup.234a2513e6bdbc1eee06ca19abceca30fe4034e82afb373c08274c1ba2feb1a6.js" integrity="sha256-I0olE&#43;a9vB7uBsoZq87KMP5ANOgq&#43;zc8CCdMG6L&#43;saY="></script>
+  <script src="/js/highlight.9.18.1.b1c58829c55afcc1f568022af4b08ed8976da404d2990b7535bd8e19c0e3310c.js" integrity="sha256-scWIKcVa/MH1aAIq9LCO2JdtpATSmQt1Nb2OGcDjMQw="></script>
+  <script src="/js/highlightjs-line-numbers.2.7.0.min.ddfe282e07b7ec1ed069c23f92c7c8216ddb3f1879c4e962d37fd52adbd15a05.js" integrity="sha256-3f4oLge37B7QacI/ksfIIW3bPxh5xOli03/VKtvRWgU="></script><script>
+  hljs.initHighlightingOnLoad();
+  hljs.initLineNumbersOnLoad();
+  document.addEventListener('DOMContentLoaded', (event) => {
+    document.querySelectorAll('.codeinline').forEach((block) => {
+      hljs.highlightBlock(block);
+    });
+  });
+</script>
+
+</body>
+</html>

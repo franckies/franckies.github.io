@@ -1,0 +1,124 @@
+*{
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Old versions of Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none; /* Non-prefixed version, currently supported by Chrome, Edge, Opera and Firefox */
+}
+body {
+  margin: 0;
+  background-color: RGBA(216.75,216.75,216.75,1.0) ;
+  overflow-y: hidden; /* Hide vertical scrollbar */
+  overflow-x: hidden; /* Hide horizontal scrollbar */
+}
+canvas {
+  display: block;
+  background-color: gray;
+  /*border:1px solid #d3d3d3;*/
+}
+h2{
+  text-align: center;
+}
+
+#legend{
+  position: absolute;
+  z-index: 1;
+  left: 40px;
+  top: 10px;
+  width:300px;
+  height:200px;
+  background-color: white;
+  border-style: dashed;
+  border-color: blue;
+  opacity: 0.7;
+  padding: 5px 10px 5px 10px;
+  overflow:auto;
+}
+#panel{
+  text-align:center;
+  position:absolute;
+  z-index: 1;
+  right: 40px;
+  top: 5px;
+  width:200px;
+  height:380px;
+  background-color: white;
+  border-style: dashed;
+  border-color: blue;
+  opacity: 0.7;
+  padding: 5px 10px 5px 10px;
+  overflow:auto;
+}
+#FPSpanel{
+  text-align:center;
+  position:absolute;
+  z-index: 1;
+  right: 40px;
+  bottom: 5px;
+  width:100px;
+  height:80px;
+  background-color: white;
+  border-style: dashed;
+  border-color: blue;
+  opacity: 0.7;
+  padding: 5px 10px 5px 10px;
+  overflow:hidden;
+}
+#LostGame{
+  text-align:center;
+  position:absolute;
+  z-index: 1;
+  width:100%;
+  height:100%;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%,-50%);
+  padding: auto;
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  overflow:auto;
+  font-size: 300%;
+  color: red;
+  background-color: white;
+  background-color: RGBA(255,255,255,0.7);
+}
+#SpaceBar{
+  text-align:center;
+  position:absolute;
+  z-index: 1;
+  width:100%;
+  height:100%;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%,-35%);
+  padding: auto;
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  overflow:auto;
+  font-size: 100%;
+  color: black;
+}
+
+#Loading{
+  text-align:center;
+  position:absolute;
+  z-index: 1;
+  width:100%;
+  height:100%;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%,-50%);
+  background-color: white;
+  padding: auto;
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  overflow:auto;
+  font-size: 300%;
+  color: black;
+  background-color: RGBA(255,255,255,0.7);
+}

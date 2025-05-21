@@ -1,0 +1,1280 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head><link rel="icon" href="/favicon_main.svg"><meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+<meta http-equiv="x-ua-compatible" content="ie=edge" /><meta property="og:url"  content="https://franckies.github.io/blog/kubernetes/1.coreconcepts/" />
+    <meta property="og:type" content="article" /><meta property="og:title" content="Kubernetes Core Concepts" /><meta property="og:description" content="Kubernetes core concepts and architecture." /><meta property="og:image:width"  content="600" />
+        <meta property="og:image:height" content="381" /><meta property="og:image" content="https://franckies.github.io/blog/kubernetes/1.coreconcepts/images/architecture_hu3773a08e766ad37f3fb7ea85d24173e9_58007_600x0_resize_q75_box.jpg" /><title>Francesco Semeraro - Personal website and blog - Kubernetes Core Concepts</title>
+
+    
+<link href="https://fonts.googleapis.com/css?family=Open&#43;Sans" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Open&#43;Sans" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Open&#43;Sans" rel="stylesheet"><link rel="stylesheet" type="text/css" href="/css/style.6fd7fa42c7b7fe49cfeceeed650d33cb8d1cdbfe842e514a22e57a6b712729aa.css" integrity="sha256-b9f6Qse3/knP7O7tZQ0zy40c2/6ELlFKIuV6a3EnKao=">
+<link rel="stylesheet" type="text/css" href="/css/monokai-sublime.9.15.8.min.91376415864fdd3a92be524052267afece4bdb1bb8c6c754f5e60c5ac28e93be.css" integrity="sha256-kTdkFYZP3TqSvlJAUiZ6/s5L2xu4xsdU9eYMWsKOk74=">
+<link rel="stylesheet" type="text/css" href="/css/all.min.2d91c07e15fc26f2697117b326256c0a2b0586dd12a15c622a53cd47a9e54a1d.css" integrity="sha256-LZHAfhX8JvJpcRezJiVsCisFht0SoVxiKlPNR6nlSh0=">
+<link rel="stylesheet" type="text/css" href="/css/refresh.14a12fb7813ddba2888e4b3b9416cf53c14139b12f6c4f24fb63c8720d9599f7.css" integrity="sha256-FKEvt4E926KIjks7lBbPU8FBObEvbE8k&#43;2PIcg2Vmfc=">
+<link rel="stylesheet" type="text/css" href="/css/devicon.min.149016fbf45c8bc157d6f55ce3ee875feaa3f90446bf7d151fbc16a9f21a8859.css" integrity="sha256-FJAW&#43;/Rci8FX1vVc4&#43;6HX&#43;qj&#43;QRGv30VH7wWqfIaiFk=">
+    
+
+  </head>
+  <body>
+     
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6L38PPSN83"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6L38PPSN83');
+</script>
+    <div id="preloader">
+      <div id="status"></div>
+    </div><nav class="navbar is-fresh is-transparent no-shadow" role="navigation" aria-label="main navigation">
+  <div class="container">
+    <div class="navbar-brand">
+
+      
+      
+      
+      <a class="navbar-item">
+        <div class="menu-icon-wrapper left-menu-icon-wrapper" style="visibility: visible;">
+          <svg width="1000px" height="1000px">
+            <path class="path1" d="M 300 400 L 700 400 C 900 400 900 750 600 850 A 400 400 0 0 1 200 200 L 800 800"></path>
+            <path class="path2" d="M 300 500 L 700 500"></path>
+            <path class="path3" d="M 700 600 L 300 600 C 100 600 100 200 400 150 A 400 380 0 1 1 200 800 L 800 200"></path>
+          </svg>
+          <button id="menu-icon-trigger" class="menu-icon-trigger"></button>
+        </div>
+        <div class="navbar-item left-menu-icon-wrapper">
+          Tags
+        </div>
+      </a>
+
+      <div class="navbar-item is-expanded"></div>
+      <a class="navbar-item is-hidden-desktop">  
+        <div data-target="navbar-menu" class="navbar-item right-menu-icon-wrapper is-hidden-desktop">
+          Menu
+        </div>
+        <div data-target="navbar-menu" class="menu-icon-wrapper right-menu-icon-wrapper" style="visibility: visible;">
+          <svg width="1000px" height="1000px">
+            <path class="path1" d="M 300 400 L 700 400 C 900 400 900 750 600 850 A 400 400 0 0 1 200 200 L 800 800"></path>
+            <path class="path2" d="M 300 500 L 700 500"></path>
+            <path class="path3" d="M 700 600 L 300 600 C 100 600 100 200 400 150 A 400 380 0 1 1 200 800 L 800 200"></path>
+          </svg>
+          <button id="menu-icon-trigger" class="menu-icon-trigger"></button>
+        </div>
+      </a>
+    </div><div id="navbar-menu" class="navbar-menu is-static">
+      
+      <div class="navbar-end">
+        
+          <a href="/" class="navbar-item is-secondary">Homepage</a><a href="/about/" class="navbar-item is-secondary">About Me</a><a href="/projects/" class="navbar-item is-secondary">Projects</a><a href="/seminars/" class="navbar-item is-secondary">Seminars</a>
+            <div class="navbar-item has-dropdown is-hoverable">
+              <a href="/blog/" class="navbar-link">Blog</a>
+              <div class="navbar-dropdown">
+                <a href="/blog/docker/" class="navbar-item">Docker</a><a href="/blog/kubernetes/" class="navbar-item">Kubernetes</a></div>
+            </div>
+        
+        
+        
+        
+        
+        
+        
+      </div>
+    </div>
+  </div>
+</nav>
+<nav id="navbar-clone" class="navbar is-fresh is-transparent" role="navigation" aria-label="main navigation">
+  <div class="container">
+      <div class="navbar-brand">
+  
+        
+        
+        
+        <a class="navbar-item">
+          <div class="menu-icon-wrapper left-menu-icon-wrapper" style="visibility: visible;">
+            <svg width="1000px" height="1000px">
+              <path class="path1" d="M 300 400 L 700 400 C 900 400 900 750 600 850 A 400 400 0 0 1 200 200 L 800 800"></path>
+              <path class="path2" d="M 300 500 L 700 500"></path>
+              <path class="path3" d="M 700 600 L 300 600 C 100 600 100 200 400 150 A 400 380 0 1 1 200 800 L 800 200"></path>
+            </svg>
+            <button id="menu-icon-trigger" class="menu-icon-trigger"></button>
+          </div>
+          <div class="navbar-item left-menu-icon-wrapper">
+            Tags
+          </div>
+        </a>
+  
+        <div class="navbar-item is-expanded"></div>
+        <a class="navbar-item is-hidden-desktop">  
+          <div data-target="cloned-navbar-menu" class="navbar-item right-menu-icon-wrapper is-hidden-desktop">
+            Menu
+          </div>
+          <div data-target="cloned-navbar-menu" class="menu-icon-wrapper right-menu-icon-wrapper" style="visibility: visible;">
+            <svg width="1000px" height="1000px">
+              <path class="path1" d="M 300 400 L 700 400 C 900 400 900 750 600 850 A 400 400 0 0 1 200 200 L 800 800"></path>
+              <path class="path2" d="M 300 500 L 700 500"></path>
+              <path class="path3" d="M 700 600 L 300 600 C 100 600 100 200 400 150 A 400 380 0 1 1 200 800 L 800 200"></path>
+            </svg>
+            <button id="menu-icon-trigger" class="menu-icon-trigger"></button>
+          </div>
+        </a>
+      </div><div id="cloned-navbar-menu" class="navbar-menu is-static">
+        <div class="navbar-end"><a href="/" class="navbar-item is-secondary">Homepage</a><a href="/about/" class="navbar-item is-secondary">About Me</a><a href="/projects/" class="navbar-item is-secondary">Projects</a><a href="/seminars/" class="navbar-item is-secondary">Seminars</a><div class="navbar-item has-dropdown is-hoverable">
+                <a href="/blog/" class="navbar-link">Blog</a>
+                <div class="navbar-dropdown">
+                  <a href="/blog/docker/" class="navbar-item">Docker</a><a href="/blog/kubernetes/" class="navbar-item">Kubernetes</a></div>
+              </div>
+          
+          
+          
+
+          
+          
+          
+        
+        </div>
+      </div>
+    </div>
+  </nav>
+<section class="section is-medium">
+  <div class="container">
+    <div class="columns">
+      <div class="column is-centered-tablet-portrait">
+        <h1 class="title is-2 section-title">Kubernetes Core Concepts</h1>
+        <h5 class="subtitle is-5 is-muted"></h5>
+        <div class="divider"></div>
+        
+        <section class="section content has-text-justified">
+          <h1 id="kubernetes-architecture">Kubernetes architecture</h1>
+<p>The purpose of Kubernetes is to host an application in the form of a container to automatically handle application scale and more.</p>
+<p>Different node types:</p>
+<ul>
+<li>Worker nodes: where the applications are running.</li>
+<li>Control plane (master): has components necessary to schedule containers on worker nodes, monitor nodes, etc</li>
+</ul>
+<h2 id="control-plane-components">Control plane components</h2>
+<h3 id="etcd">Etcd</h3>
+<p>Key-value database maintaining information about the cluster, different nodes, containers on each node, etc.</p>
+<h3 id="kube-scheduler">Kube scheduler</h3>
+<p>Schedule containers on the worker nodes based on some metrics (node load, etc.)</p>
+<h3 id="controllers">Controllers</h3>
+<ul>
+<li>Node controller takes care of nodes</li>
+<li>Replication controllers takes care the desired number of containers is running</li>
+</ul>
+<h3 id="api-server">API server</h3>
+<p>Responsible for orchestrating all operations within the cluster.</p>
+<h3 id="container-runtime-engine">Container runtime engine</h3>
+<p>All in Kubernetes is in the form of containers, so there is a CRI (docker, cri-o, etc.).</p>
+<h2 id="worker-components">Worker components</h2>
+<h3 id="kubelet">Kubelet</h3>
+<p>Listens for instructions from the API sever and deploys or destroys containers on the nodes. The kube-api-server also peroidically fetches updates from the kubelet to monitor status of nodes.</p>
+<h3 id="kube-proxy">Kube-proxy</h3>
+<p>Enables the communication among worker nodes to allow containers on different nodes to communicate.</p>
+<p><img src="./images/architecture.jpg" alt="architecture"></p>
+<h1 id="etcd-1">ETCD</h1>
+<p>ETCD is is a distributed reliable key-value store that is simple, secure and fast.</p>
+<h2 id="key-value-store">Key value store</h2>
+<p>Information are stored in a key-value format. You cannot have duplicate keys. It is used to store and retrieve small chunk of data that requires to be extracted in a fast way.
+Example of key-value data:</p>
+<pre><code>{
+&quot;name&quot;: &quot;John Doe&quot;,
+&quot;age&quot;: 45,
+&quot;location&quot;: &quot;New York&quot;,
+&quot;salary&quot;: 5000
+}
+</code></pre><h2 id="operate-etcd">Operate ETCD</h2>
+<p>ETCD can be installed as a service running on port 2379, and it can be manager through the <code>etcdctl</code> CLI that can be used to store and get information from the ETCD database.
+ETCD can be downloaded from here <code>https://github.com/etcd-io/etcd/</code>, and after extracting the package you can try the following:</p>
+<pre><code>./etcd #run etcd from installation
+./ ```etcdctl``` set key1 value1 #store value
+./ ```etcdctl``` get key1 #retrieve value
+</code></pre><h1 id="etcd-in-kubernetes">ETCD in Kubernetes</h1>
+<p>ETCD stores information about nodes, PODs, Configs, Secrets, Accounts, Roles, Bindings, etc. Every information given from the API server comes from the ETCD database.
+When making changes interacting with the <code>kubectl</code> CLI, a change is made effective only when stored on ETCD.
+Depending on how the cluster is setup, ETCD can be deployed in different modalities.
+We can distinguish two types of cluster setup:</p>
+<ul>
+<li>From scratch: ETCD is deployed by downloading and installing by yourself the ETCD service. In this case, the ETCD service will have the following configurations:</li>
+</ul>
+<pre><code>ExecStart=/usr/local/bin/etcd \\
+--name ${ETCD_NAME} \\
+--cert-file=/etc/etcd/kubernetes.pem \\
+--key-file=/etc/etcd/kubernetes-key.pem \\
+--peer-cert-file=/etc/etcd/kubernetes.pem \\
+--peer-key-file=/etc/etcd/kubernetes-key.pem \\
+--trusted-ca-file=/etc/etcd/ca.pem \\
+--peer-trusted-ca-file=/etc/etcd/ca.pem \\
+--peer-client-cert-auth \\
+--client-cert-auth \\
+--initial-advertise-peer-urls https://${INTERNAL_IP}:2380 \\
+--listen-peer-urls https://${INTERNAL_IP}:2380 \\
+--listen-client-urls https://${INTERNAL_IP}:2379,https://127.0.0.1:2379 \\
+--advertise-client-urls https://${INTERNAL_IP}:2379 \\
+--initial-cluster-token etcd-cluster-0 \\
+--initial-cluster controller-0=https://${CONTROLLER0_IP}:2380,controller-1=https://${CONTROLLER1_IP}:2380 \\
+--initial-cluster-state new \\
+--data-dir=/var/lib/etcd
+</code></pre><p>where <code>--advertise-client-urls</code> is the most important indicating where the ETCD service is listening, and this URL should be configured in the API server to tell it where to reach the ETCD.</p>
+<ul>
+<li>With <code>kubeadm</code>: kubeadm will deploy ETCD server as a pod in the kube-system namespace. Entering the ETCD pod we can run commands using the  <code>etcdctl</code> CLI as shown in the previous chapter.</li>
+</ul>
+<pre><code>kubectl exec etcd-master –n kube-system  ```etcdctl``` get / --prefix –keys-only
+</code></pre><h2 id="etcd-in-ha-environment">ETCD in HA environment</h2>
+<p>When deploying ETCD in an HA environment, you should pay attention to make sure all ETCD instances know each other by setting the <code>--initial-cluster</code> property properly.</p>
+<h2 id="etcd-commands">ETCD commands</h2>
+<p><code>etcdctl</code> is the CLI tool used to interact with ETCD.</p>
+<p><code>etcdctl</code> can interact with ETCD Server using 2 API versions - Version 2 and Version 3.  By default its set to use Version 2. Each version has different sets of commands.</p>
+<p>For example  <code>etcdctl</code> version 2 supports the following commands:</p>
+<pre><code>etcdctl backup
+etcdctl cluster-health
+etcdctl mk
+etcdctl mkdir
+etcdctl set
+</code></pre><p>Whereas the commands are different in version 3</p>
+<pre><code>etcdctl snapshot save 
+etcdctl endpoint health
+etcdctl get
+etcdctl put
+</code></pre><p>To set the right version of API set the environment variable  <strong>ETCDL_API</strong> command</p>
+<pre><code>export ETCDL_API=3
+</code></pre><p>When API version is not set, it is assumed to be set to version 2. And version 3 commands listed above don&rsquo;t work. When API version is set to version 3, version 2 commands listed above don&rsquo;t work.</p>
+<p>Apart from that, you must also specify path to certificate files so that  <code>etcdctl</code> can authenticate to the ETCD API Server. The certificate files are available in the etcd-master at the following path.</p>
+<pre><code>--cacert /etc/kubernetes/pki/etcd/ca.crt     
+--cert /etc/kubernetes/pki/etcd/server.crt     
+--key /etc/kubernetes/pki/etcd/server.key
+</code></pre><p>So the final version of the command to use <code>etcdl</code> from the ETCDL pod is the following:</p>
+<pre><code>kubectl exec etcd-master -n kube-system -- sh -c &quot; ETCDL_API=3  etcdctl get / --prefix --keys-only --limit=10 --cacert /etc/kubernetes/pki/etcd/ca.crt \\
+--cert /etc/kubernetes/pki/etcd/server.crt  --key /etc/kubernetes/pki/etcd/server.key&quot; 
+</code></pre><h1 id="kube-api-server">Kube api server</h1>
+<p>It is the primary management component in Kubernetes. When using <code>kubectl</code> you are issuing a request to the <code>kube-apiserver</code> which authenticate the user, validates the request, performs an operation and answers.</p>
+<p>For instance, when creating a new POD, you have to submit a <code>POST</code> request to the <code>kube-apiserver</code> which performs the following operations:</p>
+<ol>
+<li>Authenticate User</li>
+<li>Validate request</li>
+<li>Retrieve data</li>
+<li>Update ETCD</li>
+<li>Then the scheduler which monitors the API server, realise there is a POD with no node assigned, so identify the node, communicate it to the API server which stores the information in the ETCD database and passes the information to the kubelet which deploys the application&rsquo;s POD.
+Then the kubelet goes back to the <code>kube-apiserver</code> which updates ETCD.</li>
+</ol>
+<h2 id="operate-kube-api-server">Operate Kube api server</h2>
+<p>As said for ETCD, also the <code>kube-apiserver</code> can be configured both from scratch or with <code>kubeadm</code>. In the first case, you have to install it by its binary and then run it as a service on the master node.
+Setting up the cluster from scratch, you can download the APi server from:</p>
+<pre><code>wget https://storage.googleapis.com/kubernetes-release/release/v1.13.0/bin/linux/amd64/kube-apiserver
+</code></pre><p>Instead, with <code>kubeadm</code>, the kube-apiserver is deployed as a POD in the master node. The yaml file describing <code>kube-apiserver</code> is at:</p>
+<pre><code> /etc/kubernetes/manifests/kube-apiserver.yaml
+</code></pre><p>Here all the configurable options of <code>kube-apiserver</code>:</p>
+<pre><code>ExecStart=/usr/local/bin/kube-apiserver \\
+--advertise-address=${INTERNAL_IP} \\
+--allow-privileged=true \\
+--apiserver-count=3 \\
+--audit-log-maxage=30 \\
+--audit-log-maxbackup=3 \\
+--audit-log-maxsize=100 \\
+--audit-log-path=/var/log/audit.log \\
+--authorization-mode=Node,RBAC \\
+--bind-address=0.0.0.0 \\
+--client-ca-file=/var/lib/kubernetes/ca.pem \\
+--enable-admission-plugins=Initializers,NamespaceLifecycle,NodeRestriction,LimitRanger,ServiceAccount,Defa
+ultStorageClass,ResourceQuota \\
+--enable-swagger-ui=true \\
+--etcd-cafile=/var/lib/kubernetes/ca.pem \\
+--etcd-certfile=/var/lib/kubernetes/kubernetes.pem \\
+--etcd-keyfile=/var/lib/kubernetes/kubernetes-key.pem \\
+--etcd-servers=https://10.240.0.10:2379,https://10.240.0.11:2379,https://10.240.0.12:2379 \\
+--event-ttl=1h \\
+--experimental-encryption-provider-config=/var/lib/kubernetes/encryption-config.yaml
+\\
+--kubelet-certificate-authority=/var/lib/kubernetes/ca.pem \\
+--kubelet-client-certificate=/var/lib/kubernetes/kubernetes.pem \\
+</code></pre><h1 id="kube-controller-manager">Kube controller manager</h1>
+<p>It manages various controllers in Kubernetes. Each controller is responsible of different topics, but each of them act by watching the status of the monitored resource and reconcile the situation to the desired state.</p>
+<p>Some examples of Kubernetes controllers are:<br>
+<strong>Node controller</strong>:
+The node controller is responsible for monitoring the state of the nodes by checking their status each 5 seconds. If it stops receiving heartbeat from one node, it is marker unreachable after additional 40 seconds.
+After a node is marker unreachable, it has 5 minutes to come back up. After that, all PODs are evicted from that node and moved to a live node.</p>
+<p><strong>Replication controller</strong>: It is responsible for ensuring the desired number of PODs are available within each replicaset. If a POD dies, it creates another one.</p>
+<p>When the Kubernetes controller manager is installed, all the controllers are automatically installed, including the two explained above.</p>
+<p>You can install the Kubernetes controller manager as a service (from scratch) here:</p>
+<pre><code>wget https://storage.googleapis.com/kubernetes-release/release/v1.13.0/bin/linux/amd64/kube-controller-manager
+</code></pre><p>or using <code>kubeadm</code> as a POD in the kube-system namespace.</p>
+<p>Here all the configurable options of Kube controller manager:</p>
+<pre><code>ExecStart=/usr/local/bin/kube-controller-manager \\
+--address=0.0.0.0 \\
+--cluster-cidr=10.200.0.0/16 \\
+--cluster-name=kubernetes \\
+--cluster-signing-cert-file=/var/lib/kubernetes/ca.pem \\
+--cluster-signing-key-file=/var/lib/kubernetes/ca-key.pem \\
+--kubeconfig=/var/lib/kubernetes/kube-controller-manager.kubeconfig \\
+--leader-elect=true \\
+--root-ca-file=/var/lib/kubernetes/ca.pem \\
+--service-account-private-key-file=/var/lib/kubernetes/service-account-key.pem \\
+--service-cluster-ip-range=10.32.0.0/24 \\
+--use-service-account-credentials=true \\
+--v=2
+</code></pre><h1 id="kube-scheduler-1">Kube scheduler</h1>
+<p>The scheduler is responsible for deciding which POD goes on which node, without actually creating that POD: the <code>kubelet</code> is then responsible for creating it.
+The decision is taken based on two phases:</p>
+<ol>
+<li>The scheduler discards the nodes that do not fit the POD&rsquo;s requirements, for instance CPU or memory requirements.</li>
+<li>The scheduler identifies the best node among the remaining to assign the POD. This is done by assigning a score to each node and choosing the one getting a better ranking.</li>
+</ol>
+<p>The kube-scheduler can be installed:</p>
+<ol>
+<li>As a service:</li>
+</ol>
+<pre><code>wget https://storage.googleapis.com/kubernetes-release/release/v1.13.0/bin/linux/amd64/kube-scheduler
+
+</code></pre><ol start="2">
+<li>By means of <code>kubeadm</code> having a POD running in the kube-system namespace.
+THe list of configurable options for the scheduler is:</li>
+</ol>
+<pre><code>ExecStart=/usr/local/bin/kube-scheduler \\
+--config=/etc/kubernetes/config/kube-scheduler.yaml \\
+--v=2
+</code></pre><h1 id="kubelet-1">Kubelet</h1>
+<p>The <code>kubelet</code> service is responsible for registering the node within the cluster, and waiting for instructions to load a new POD on the node.
+Whenever a new POD should be scheduled, it communicates with the CRI to download the image and actually run the container.
+Notice that to deploy <code>kubelet </code>there is just one option: installing <code>kubelet</code> and run it as a service on all worker nodes. <code>Kubeadm</code> will not install and configure it for you.</p>
+<p>Here is how to download and see kubelet configuration options:</p>
+<pre><code>wget https://storage.googleapis.com/kubernetes-release/release/v1.13.0/bin/linux/amd64/kubelet
+
+</code></pre><pre><code>ExecStart=/usr/local/bin/kubelet \\
+--config=/var/lib/kubelet/kubelet-config.yaml \\
+--container-runtime=remote \\
+--container-runtime-endpoint=unix:///var/run/containerd/containerd.sock \\
+--image-pull-progress-deadline=2m \\
+--kubeconfig=/var/lib/kubelet/kubeconfig \\
+--network-plugin=cni \\
+--register-node=true \\
+--v=2
+</code></pre><h1 id="kube-proxy-1">Kube proxy</h1>
+<p>Within a Kubernetes cluster every POD can communicate with every other POD. This is obtained by setting up a POD network spanning multiple nodes.</p>
+<p><code>kube-proxy</code> is a process running on each node, which is in charge to look for new Kubernetes services: each time a new service is created, <code>kube-proxy</code> creates the appropriate rule on each node to forward the traffic destined to the services to the actual backend PODs.
+One way it does this is using IP tables rules.</p>
+<p>Again, <code>kube-proxy</code> can be run as a service or using <code>kubeadm</code> which deploys it as a <code>daemonset</code>, making it running on each node.</p>
+<p>Here is how to download kube-proxy as a service and the configurable options:</p>
+<pre><code>wget https://storage.googleapis.com/kubernetes-release/release/v1.13.0/bin/linux/amd64/kube-proxy
+</code></pre><pre><code>ExecStart=/usr/local/bin/kube-proxy \\
+--config=/var/lib/kube-proxy/kube-proxy-config.yaml
+Restart=on-failure
+RestartSec=5
+</code></pre><h1 id="pods">PODs</h1>
+<p>We will start from a scenario where you have an application developed and containerized in a Docker image, and a fully-working Kubernetes cluster.<br>
+To deploy your application into Kubernetes, you cannot directly deploy the container starting from the image, but you have to first incapsulate the container into a POD.
+When the application have to be scaled, a new POD identical to the previous one is deployed on the same Kubernetes node, or in another node.<br>
+Usually, PODs have a 1:1 relationship with an application (container), but there are cases in which more than one container can be deployed in the same POD, like <em>sidecar</em> containers. Example of sidecar containers are container repsonsible for collecting logs from the main application&rsquo;s container.</p>
+<p>You can run a simple POD with an nginx container using the following <code>kubectl</code> command:</p>
+<pre><code>kubectl run nginx --image nginx
+</code></pre><p>Kubernetes will create a new POD downloading the <code>nginx:latest</code>
+image from Docker Hub, and will assign the name &ldquo;nginx&rdquo; to the POD. You can then view the available PODs with:</p>
+<pre><code>kubectl get pods
+</code></pre><p><img src="./images/getpo.png" alt="getpo"></p>
+<p>At this moment, the POD is only reachable within the cluster using its <strong>Cluster IP</strong>. We will then see how to deploy a Kubernetes service to make the POD reachable from outside the cluster.</p>
+<p>Instead of using the <em>imperative</em> way by running <code>kubectl run</code>, we can also use the <em>declarative</em> way by defining a YAML manifest describing the POD specification and <code>POST</code>ing it to the Kubernetes API server by means of the <code>kubectl apply</code> command.
+An example of a basic YAML manifest to deploy an nginx file is the following:</p>
+<pre><code>pod-definition.yaml
+-------------------
+apiVersion: v1
+kind: Pod
+metadata: 
+    name: nginx-pod
+    labels: 
+        app: nginx
+spec:
+    containers:
+    - name: nginx-container
+      image: nginx:latest
+</code></pre><p>Notice that, for instance, <strong>&ldquo;kind&rdquo;</strong> is a <em>&ldquo;string&rdquo;</em> type, while <strong>&ldquo;metadata&rdquo;</strong> is a <em>&ldquo;dictionary&rdquo;</em> type. <strong>&ldquo;containers</strong>&rdquo;, on the other hand, is a <em>&ldquo;list&rdquo;</em> type.</p>
+<p>After that, just run</p>
+<pre><code>kubectl apply -f ./pod-definition.yaml
+</code></pre><p>to run the POD.
+To get details about the POD you can use:</p>
+<pre><code>kubectl decribe pod nginx
+</code></pre><pre><code>Name:         nginx
+Namespace:    default
+Priority:     0
+Node:         node1
+Start Time:   Fri, 18 Feb 2022 15:55:50 +0100
+Labels:       run=nginx
+Annotations:  &lt;none&gt;
+Status:       Running
+IP:           10.244.1.75
+IPs:
+  IP:  10.244.1.75
+Containers:
+  nginx:
+    Container ID:   containerd://&lt;...&gt;
+    Image:          nginx
+    Image ID:       docker.io/library/nginx@sha256:&lt;...&gt;
+    Port:           &lt;none&gt;
+    Host Port:      &lt;none&gt;
+    State:          Running
+      Started:      Fri, 18 Feb 2022 15:55:51 +0100
+    Ready:          True
+    Restart Count:  0
+    Environment:    &lt;none&gt;
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from default-token-q4qfs (ro)
+Conditions:
+  Type              Status
+  Initialized       True
+  Ready             True
+  ContainersReady   True
+  PodScheduled      True
+Volumes:
+  default-token-q4qfs:
+    Type:        Secret (a volume populated by a Secret)
+    SecretName:  default-token-q4qfs
+    Optional:    false
+QoS Class:       BestEffort
+Node-Selectors:  &lt;none&gt;
+Tolerations:     node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                 node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+Events:
+  Type    Reason     Age   From               Message
+  ----    ------     ----  ----               -------
+  Normal  Scheduled  4s    default-scheduler  Successfully assigned default/nginx to node1
+  Normal  Pulling    4s    kubelet            Pulling image &quot;nginx&quot;
+  Normal  Pulled     3s    kubelet            Successfully pulled image &quot;nginx&quot; in 938.414773ms
+  Normal  Created    3s    kubelet            Created container nginx
+  Normal  Started    3s    kubelet            Started container nginx
+</code></pre><p>To delete the POD, then run:</p>
+<pre><code>kubectl delete pod nginx
+</code></pre><pre><code>pod &quot;nginx&quot; deleted
+</code></pre><h1 id="repica-sets">Repica sets</h1>
+<p>It is possible to have more than one instance of the same application POD within a Kubernetes cluster. This is done by the replication-controller which ensures the desired number of PODs for each application is always available.
+Keep in mind that the replication-controller spans across multiple nodes: the same application can have a number of pods replicas that are spread across differend kubernetes nodes.</p>
+<p>The replication-controller is different from the replica-set: the replication-controller is the old technology replaced by the <em>replica-set</em>. They perform the same operation, but there are minor differences in terms of implementation.</p>
+<p>To deploy a replication-controller, we can use the following yaml:</p>
+<pre><code>replication-controller-definition.yaml
+-------------------
+apiVersion: v1
+kind: ReplicationController
+metadata: 
+    name: nginx-rc
+    labels: 
+        app: nginx
+spec:
+    template:     # The template defines which PODs the replication-controller must create
+        metadata: 
+            name: nginx-pod
+            labels: 
+                app: nginx
+        spec:
+            containers:
+            - name: nginx-container
+            image: nginx:latest
+    replicas: 3     # Number of PODs to create
+</code></pre><p>Running the command:</p>
+<pre><code>kubectl get replicationcontroller
+</code></pre><p>we can see the replication-controller in the cluster.</p>
+<p>The replica-set, instead, is slightly different. It includes a <em>selector</em> section where you must specify to tell the replica-set which PODs will fall under it. This is because the replica-set can also manage PODs that are not created together with the replica-set. For instance, the replica-set can manage PODs that are created before the creation of the replica-set itfself.</p>
+<pre><code>replication-controller-definition.yaml
+-------------------
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata: 
+    name: nginx-rs
+    labels: 
+        app: nginx
+spec:
+    template:
+        metadata: 
+            name: nginx-pod
+            labels: 
+                app: nginx
+        spec:
+            containers:
+            - name: nginx-container
+            image: nginx:latest
+    replicas: 3 
+    selector:
+        matchLabels:
+            app: nginx
+</code></pre><p>Running the command:</p>
+<pre><code>kubectl get replicaset
+</code></pre><p>we can see the replica-sets in the cluster.</p>
+<p>A way to imperatively scale a replica-set is the following:</p>
+<pre><code>kubectl scale --replicas=6 replicaset nginx-rs
+</code></pre><h1 id="deployments">Deployments</h1>
+<p><strong>Deployments</strong> are Kubernetes objects incapsulating the replica-set object. The deployment provides us with the capability to upgrade the underlying instances seamlessly using a <em>rolling update</em> strategy, undo changes and pause and resume changes.</p>
+<p>The following is a YAML of a Kubernetes deployment.</p>
+<pre><code>deployment-definition.yaml
+-------------------
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+    name: nginx-deploy
+    labels: 
+        app: nginx
+spec:
+    template:
+        metadata: 
+            name: nginx-pod
+            labels: 
+                app: nginx
+        spec:
+            containers:
+            - name: nginx-container
+            image: nginx:latest
+    replicas: 3 
+    selector:
+        matchLabels:
+            app: nginx
+</code></pre><p>When creating a Kubernetes deployment, also the corresponding replicaset and PODs are created. It is possible to see all created resources at once by running:</p>
+<pre><code>kubectl get all
+</code></pre><h1 id="certification-tip">Certification Tip!</h1>
+<p>As you might have seen already, it is a bit difficult to create and edit YAML files. Especially in the CLI. During the exam, you might find it difficult to copy and paste YAML files from browser to terminal. Using the kubectl run command can help in generating a YAML template. And sometimes, you can even get away with just the kubectl run command without having to create a YAML file at all. For example, if you were asked to create a pod or deployment with specific name and image you can simply run the kubectl run command.</p>
+<p>Use the below set of commands to speed up resource creation.
+Reference (Bookmark this page for exam. It will be very handy):
+<a href="https://kubernetes.io/docs/reference/kubectl/conventions/">https://kubernetes.io/docs/reference/kubectl/conventions/</a></p>
+<h2 id="create-an-nginx-pod">Create an NGINX Pod</h2>
+<pre><code>kubectl run nginx --image=nginx
+</code></pre><h2 id="generate-pod-manifest-yaml-file--o-yaml-dont-create-it--dry-run">Generate POD Manifest YAML file (-o yaml). Don&rsquo;t create it(&ndash;dry-run)</h2>
+<pre><code>kubectl run nginx --image=nginx --dry-run=client -o yaml
+</code></pre><h2 id="create-a-deployment">Create a deployment</h2>
+<pre><code>kubectl create deployment --image=nginx nginx
+</code></pre><h2 id="generate-deployment-yaml-file--o-yaml-dont-create-it--dry-run">Generate Deployment YAML file (-o yaml). Don&rsquo;t create it(&ndash;dry-run)</h2>
+<pre><code>kubectl create deployment --image=nginx nginx --dry-run=client -o yaml
+</code></pre><h2 id="generate-deployment-yaml-file--o-yaml-dont-create-it--dry-run-with-4-replicas---replicas4">Generate Deployment YAML file (-o yaml). Don&rsquo;t create it(&ndash;dry-run) with 4 Replicas (&ndash;replicas=4)</h2>
+<pre><code>kubectl create deployment --image=nginx nginx --dry-run=client -o yaml &gt; nginx-deployment.yaml
+</code></pre><h2 id="save-it-to-a-file-make-necessary-changes-to-the-file-for-example-adding-more-replicas-and-then-create-the-deployment">Save it to a file, make necessary changes to the file (for example, adding more replicas) and then create the deployment.</h2>
+<pre><code>kubectl create -f nginx-deployment.yaml
+</code></pre><p>OR</p>
+<p><strong>In k8s version 1.19+, we can specify the &ndash;replicas option to create a deployment with 4 replicas.</strong></p>
+<pre><code>kubectl create deployment --image=nginx nginx --replicas=4 --dry-run=client -o yaml &gt; nginx-deployment.yaml
+</code></pre><h1 id="namespaces">Namespaces</h1>
+<p>Namespaces represent logical partitioning of a Kubernetes cluster where Kubernetes resources can be put into.
+By default, Kubernetes creates three namespaces when a cluster is created:</p>
+<ul>
+<li><strong>default</strong> namespace: initially empty.</li>
+<li><strong>kube-system</strong> namespace: where all system PODs are places (etcd, kube-proxy, etc.).</li>
+<li><strong>kube-public</strong>: where resources that should be made available for all users are created.</li>
+</ul>
+<p>You can create your own namespace as well:</p>
+<pre><code>kubectl create namespace dev
+</code></pre><p>Each namespace can have a set of enforcements, like:</p>
+<ul>
+<li><em>Policies</em> to define who can do what;</li>
+<li><em>Resource limits</em> to specify the maximum amount of resources allocated to the resource in the namespace;</li>
+</ul>
+<p>A given POD can reach both services in its same namespace as well as services in other namespaces:</p>
+<ul>
+<li>To connect to a POD in the same namespace, you just need to specify its name.</li>
+<li>To connect to a service in another namespace, you specify it with the following naming convention: <em>servicename.namespace.svc.cluster.local</em>.</li>
+</ul>
+<p>You can list resources specifying the namespace:</p>
+<pre><code>kubectl get pods -n namespace
+</code></pre><p>or to get PODS in all namespaces:</p>
+<pre><code>kubectl get pods --all-namespaces
+or
+kubectl get pods -A
+</code></pre><p>You can also specify what is the default namespace using the command:</p>
+<pre><code>kubectl config set-context $(kubectl config current-context) --namespace=dev
+</code></pre><p>To limit the amount of resources to allocate to a given namespace, you can create a <strong>resource-quota</strong>.
+An example is:</p>
+<pre><code>resource-quota-definition.yaml
+----------------
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+    name: compute-quota
+    namespace: dev
+spec:
+    hard:
+        pods: &quot;10&quot;
+        requests.cpu: &quot;4&quot;
+        requests.memory: 5Gi
+        limits.cpu: &quot;10&quot;
+        limits.memory: 10Gi
+</code></pre><h1 id="services">Services</h1>
+<p>Kubernetes services enable communication between various components within and outside an application, and help connect application together and other applications to users.
+There are different types of Kubernetes services:</p>
+<p><img src="./images/services.jpg" alt="services"></p>
+<ul>
+<li><strong>Nodeport</strong>: the service makes an internal POD accessible on a given port on each Kubernetes node.</li>
+<li><strong>ClusterIP</strong>: the service creates a virtual IP within the cluster for internal communication.</li>
+<li><strong>LoadBalancer</strong>: it provisions a load balancer for the Kubernetes services in supported cloud providers (Azure, Aws, GCP, etc.).</li>
+</ul>
+<h2 id="nodeport">NodePort</h2>
+<p>The <strong>nodeport</strong> service maps a port on the Kubernetes nodes with a port on the POD running inside the cluster.</p>
+<p><img src="./images/nodeport.jpg" alt="nodeport"></p>
+<p>In this scenario, we have different definitions:</p>
+<ul>
+<li>The <em>nodeport</em> is the port of the Kubernetes node where the service can be reached. The nodeport can be in the range 30000-32767.</li>
+<li>The <em>targetport</em> is the port which the service maps on the POD.
+A nodeport service is defined as follows:</li>
+</ul>
+<pre><code>nodeport-definition.yaml
+----------------
+apiVersion: v1
+kind: Service
+metadata:
+    name: nodeport-service
+spec:
+    type: NodePort
+    ports:
+    - targetPort: 80
+        port: 80
+        nodePort: 30008
+    selector:
+        app: nginx
+</code></pre><p>The only mandatory field is port, the targetPort is automatically set to the port value, and the nodePort is automatically chosen between 30000 and 32767.
+The service is connected to the application through the <em>selector</em> specification, which in the example matches the label <em>app</em>.</p>
+<p>Clearly, the service is not commonly used to expose a single POD, but instead to expose a whole deployment, performing automatic balance among replicas in the deployment.
+The load is distributed in a random fashion using the principle of <em>session affinity</em>.</p>
+<h2 id="cluster-ip">Cluster IP</h2>
+<p>Usually an application is composed by different layers, a frontend, a backend and a data layer. PODs in different layers need to communicate with each other. To do this, they cannot use the IP assigned to the POD itself, since this IP is <em>ephemeral</em> and will be changed each time the POD is restarted for some reasons.
+Therefore, the <strong>cluster-ip</strong> service provides PODs (or deployments) with a stable internal IP to allow inter PODs communication.</p>
+<p><img src="./images/clusterip.jpg" alt="clusterip"></p>
+<p>A cluster-ip service is defined as follows:</p>
+<pre><code>cluster-ip-definition.yaml
+----------------
+apiVersion: v1
+kind: Service
+metadata:
+    name: cluster-ip-service
+spec:
+    type: ClusterIP
+    ports:
+    - targetPort: 80
+        port: 80
+    selector:
+        app: nginx
+</code></pre><h2 id="load-balancer">Load balancer</h2>
+<p>If an application should be accessed by end-users, we need to provide a single entry-point to it. Nodeport service will make the application accessible using any one of the cluster nodes' IPs on the given nodeport. Therefore, the <strong>load-balancer</strong> service comes in by assigning a public IP to the service using a supported cloud load balancer.</p>
+<p>A load-balancer service is defined as follows:</p>
+<pre><code>load-balancer-definition.yaml
+----------------
+apiVersion: v1
+kind: Service
+metadata:
+    name: load-balancer-service
+spec:
+    type: LoadBalancer
+    ports:
+    - targetPort: 80
+        port: 80
+    selector:
+        app: nginx
+</code></pre><h2 id="additional-tips">Additional tips</h2>
+<p>A Kubernetes service can also be created in the imperative way using:</p>
+<pre><code>kubectl expose pod nginx --type=NodePort --port=80 --name=nginx-service
+</code></pre><p>or to specify the service type</p>
+<pre><code>kubectl create service clusterip nginx --tcp=6379:6379 --dry-run=client -o yaml
+</code></pre><p>Both the above commands have their own challenges. While one of it cannot accept a selector the other cannot accept a node port. I would recommend going with the kubectl expose command. If you need to specify a node port, generate a definition file using the same command and manually input the nodeport before creating the service.</p>
+<h1 id="imperative-vs-declarative-approaches">Imperative vs Declarative approaches</h1>
+<p>So far we&rsquo;ve seen different ways of creating and managing Kubernetes resources. In the <em>infrastructure as code</em> world there are two ways of creating resources: <strong>imperative</strong> and <strong>declarative</strong> way.
+The imperative way, consists in specifying what to do and how to do it accordingly. The declarative approach consists in specifying the final desired outcome and the system will figure out what to do to reach the desired result.</p>
+<p>In the imperative approach, we declare step-by-step what to do:</p>
+<pre><code>1. Provision a VM by the name 'web-server'.
+2. Install NGINX software on it.
+3. Edit configuration file to use port '8080'
+</code></pre><p>In the declarative way, we specify the outcome:</p>
+<pre><code>VM Name: web-server
+Package: nginx
+Port: 8080
+</code></pre><p>In the Kubernetes world, the imperative way is implemented by using kubectl commands.
+For instance:</p>
+<pre><code>kubectl run --image=nginx nginx
+</code></pre><p>The declarative approach, is instead implemented using YAML manifest files.
+For instance:</p>
+<pre><code>nginx-pod.yaml
+---------------
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: nginx
+  name: nginx
+spec:
+  containers:
+  - image: nginx
+    name: nginx
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+</code></pre><p>The suggested way to do things is using the declarative approach, to keep track of what has been done and implement idempotent configurations.
+In the exam, however, the imperative way is very useful to speed up commands execution.</p>
+<h1 id="kubectl-apply">Kubectl Apply</h1>
+<p>The Kubectl Apply command can be used to create or update Kubernetes objects starting from a yaml configuration file. When applying a Kubernetes manifests, there are two possibilities of how Kubernetes actually manages it:</p>
+<ol>
+<li>If the object does not exists, Kubernetes creates the object starting from the YAML.</li>
+<li>If the object already exists, Kubernetes compare the new manifest with the <em>last applied configuration</em>, which is a json version of the last applied yaml file, and applies the changes in an <em>incremental</em> way.
+Notice that the <em>last applied configuration</em> is stored within the Kubernetes yaml file created from Kubernetes as an <strong>annotation</strong> in the kubectl.kubernetes.io/last-applied-configuration key.
+An example is the following:</li>
+</ol>
+<pre><code>nginx-deployment.yaml
+---------------
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    # ...
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {&quot;apiVersion&quot;:&quot;apps/v1&quot;,&quot;kind&quot;:&quot;Deployment&quot;,
+      &quot;metadata&quot;:{&quot;annotations&quot;:{},&quot;name&quot;:&quot;nginx-deployment&quot;,&quot;namespace&quot;:&quot;default&quot;},
+      &quot;spec&quot;:{&quot;selector&quot;:{&quot;matchLabels&quot;:{&quot;app&quot;:nginx}},&quot;template&quot;:{&quot;metadata&quot;:{&quot;labels&quot;:{&quot;app&quot;:&quot;nginx&quot;}},
+      &quot;spec&quot;:{&quot;containers&quot;:[{&quot;image&quot;:&quot;nginx:1.16.1&quot;,&quot;name&quot;:&quot;nginx&quot;,
+      &quot;ports&quot;:[{&quot;containerPort&quot;:80}]}]}}}}      
+    # ...
+spec:
+  selector:
+    matchLabels:
+      # ...
+      app: nginx
+  replicas: 2 # Set by `kubectl scale`.  Ignored by `kubectl apply`.
+  # minReadySeconds cleared by `kubectl apply`
+  # ...
+  template:
+    metadata:
+      # ...
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - image: nginx:1.16.1 # Set by `kubectl apply`
+        # ...
+        name: nginx
+        ports:
+        - containerPort: 80
+        # ...
+      # ...
+    # ...
+  # ...
+</code></pre>
+        </section>
+      </div>
+    </div>
+  </div>  
+  </section>
+<footer class="footer footer-dark">
+  <div class="container">
+    <div class="columns">
+      <div class="column">
+        <img src="/footer.svg" alt="">
+        
+      </div>
+      
+    <div class="column">
+        <div class="footer-column">
+          <div class="footer-header">
+              <h3>Website</h3>
+          </div>
+          <ul class="link-list"><li><a href="/credits/">
+                  <span class="icon"><i class="fa fa-cube"></i></span>
+                  Credits
+                </a></li>
+            <li><a href="/tags/">
+                <span class="icon"><i class="fa fa-tag"></i></span> 
+                All Tags
+              </a></li>
+          </ul>
+        </div>
+      </div>
+    
+      
+      <div class="column">
+        <div class="footer-column">
+          <div class="footer-header">
+              <h3>Contacts</h3>
+          </div>
+          <ul class="link-list">
+            
+            <li>
+              <a href="https://www.linkedin.com/in/francesco-semeraro-09b305190" target="_blank">
+                <span class="icon"><i class="fab fa-linkedin"></i></span>
+                
+                  LinkedIn
+                
+              </a>
+            </li>
+            
+            
+            <li>
+              <a href="https://github.com/franckies" target="_blank">
+                <span class="icon"><i class="fab fa-github-square"></i></span>
+                
+                  Github
+                
+              </a>
+            </li>
+                         
+            
+            <li>
+              <a href="mailto:fk.semeraro@gmail.com" target="_blank">
+                <span class="icon"><i class="fa fa-envelope"></i></span>
+                
+                  Email
+                
+              </a>
+            </li>
+            
+                   
+                   
+            
+                   
+          </ul>
+        </div>
+      </div>
+      
+
+      
+      <div class="column">
+        <div class="footer-column">
+          <div class="footer-header">
+              <h3>Copyright</h3>
+          </div>
+          <ul class="link-list">
+            <li>
+              <a>
+                <span class="icon"><i class="fa fa-copyright"></i></span>
+                FS - 2021
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      
+
+    </div>
+  </div>
+</footer>
+    <div id="backtotop"><a href="#"></a></div><div class="sidebar scroll">
+  <div class="sidebar-header"><img src="/sidebar.svg" alt="">
+    
+    <a class="sidebar-close" href="javascript:void(0);">
+      <i data-feather="x"></i>
+    </a>
+  </div>
+  <div class="inner">
+    <ul class="sidebar-menu">
+      <li class="no-children"><a href="/tags/"><div class="columns">
+              <table width="100%">  
+                <tr>
+                  <td class="">
+                    <span class="icon"><i class="fa fa-cubes"></i></span>
+                    All Tags
+                  </td>
+                  <td class="has-text-right" >
+                      
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </a>
+      <li class="no-children">
+          <a href="/tags/cloud">
+            <div class="columns">
+              
+              <table width="100%">  
+                  <tr>
+                    <td class=""><span class="icon"><i class="fa fa-cube"></i></span>cloud</td>
+                    <td class="has-text-right" >
+                        <div class="tag-number">5</div>
+                      
+                    </td>
+                    
+                  </tr>
+              </table>
+              
+            </div>
+          </a>
+      </li>
+      <li class="no-children">
+          <a href="/tags/azure">
+            <div class="columns">
+              
+              <table width="100%">  
+                  <tr>
+                    <td class=""><span class="icon"><i class="fa fa-cube"></i></span>azure</td>
+                    <td class="has-text-right" >
+                        <div class="tag-number">3</div>
+                      
+                    </td>
+                    
+                  </tr>
+              </table>
+              
+            </div>
+          </a>
+      </li>
+      <li class="no-children">
+          <a href="/tags/docker">
+            <div class="columns">
+              
+              <table width="100%">  
+                  <tr>
+                    <td class=""><span class="icon"><i class="fa fa-cube"></i></span>docker</td>
+                    <td class="has-text-right" >
+                        <div class="tag-number">2</div>
+                      
+                    </td>
+                    
+                  </tr>
+              </table>
+              
+            </div>
+          </a>
+      </li>
+      <li class="no-children">
+          <a href="/tags/kubernetes">
+            <div class="columns">
+              
+              <table width="100%">  
+                  <tr>
+                    <td class=""><span class="icon"><i class="fa fa-cube"></i></span>kubernetes</td>
+                    <td class="has-text-right" >
+                        <div class="tag-number">2</div>
+                      
+                    </td>
+                    
+                  </tr>
+              </table>
+              
+            </div>
+          </a>
+      </li>
+      <li class="no-children">
+          <a href="/tags/terraform">
+            <div class="columns">
+              
+              <table width="100%">  
+                  <tr>
+                    <td class=""><span class="icon"><i class="fa fa-cube"></i></span>terraform</td>
+                    <td class="has-text-right" >
+                        <div class="tag-number">2</div>
+                      
+                    </td>
+                    
+                  </tr>
+              </table>
+              
+            </div>
+          </a>
+      </li>
+      <li class="no-children">
+          <a href="/tags/api">
+            <div class="columns">
+              
+              <table width="100%">  
+                  <tr>
+                    <td class=""><span class="icon"><i class="fa fa-cube"></i></span>api</td>
+                    <td class="has-text-right" >
+                        <div class="tag-number">1</div>
+                      
+                    </td>
+                    
+                  </tr>
+              </table>
+              
+            </div>
+          </a>
+      </li>
+      <li class="no-children">
+          <a href="/tags/ar">
+            <div class="columns">
+              
+              <table width="100%">  
+                  <tr>
+                    <td class=""><span class="icon"><i class="fa fa-cube"></i></span>ar</td>
+                    <td class="has-text-right" >
+                        <div class="tag-number">1</div>
+                      
+                    </td>
+                    
+                  </tr>
+              </table>
+              
+            </div>
+          </a>
+      </li>
+      <li class="no-children">
+          <a href="/tags/c#">
+            <div class="columns">
+              
+              <table width="100%">  
+                  <tr>
+                    <td class=""><span class="icon"><i class="fa fa-cube"></i></span>c#</td>
+                    <td class="has-text-right" >
+                        <div class="tag-number">1</div>
+                      
+                    </td>
+                    
+                  </tr>
+              </table>
+              
+            </div>
+          </a>
+      </li>
+      <li class="no-children">
+          <a href="/tags/devops">
+            <div class="columns">
+              
+              <table width="100%">  
+                  <tr>
+                    <td class=""><span class="icon"><i class="fa fa-cube"></i></span>devops</td>
+                    <td class="has-text-right" >
+                        <div class="tag-number">1</div>
+                      
+                    </td>
+                    
+                  </tr>
+              </table>
+              
+            </div>
+          </a>
+      </li>
+      <li class="no-children">
+          <a href="/tags/flask">
+            <div class="columns">
+              
+              <table width="100%">  
+                  <tr>
+                    <td class=""><span class="icon"><i class="fa fa-cube"></i></span>flask</td>
+                    <td class="has-text-right" >
+                        <div class="tag-number">1</div>
+                      
+                    </td>
+                    
+                  </tr>
+              </table>
+              
+            </div>
+          </a>
+      </li>
+      <li class="no-children">
+          <a href="/tags/hmd">
+            <div class="columns">
+              
+              <table width="100%">  
+                  <tr>
+                    <td class=""><span class="icon"><i class="fa fa-cube"></i></span>hmd</td>
+                    <td class="has-text-right" >
+                        <div class="tag-number">1</div>
+                      
+                    </td>
+                    
+                  </tr>
+              </table>
+              
+            </div>
+          </a>
+      </li>
+      <li class="no-children">
+          <a href="/tags/hololens">
+            <div class="columns">
+              
+              <table width="100%">  
+                  <tr>
+                    <td class=""><span class="icon"><i class="fa fa-cube"></i></span>hololens</td>
+                    <td class="has-text-right" >
+                        <div class="tag-number">1</div>
+                      
+                    </td>
+                    
+                  </tr>
+              </table>
+              
+            </div>
+          </a>
+      </li>
+      <li class="no-children">
+          <a href="/tags/javascript">
+            <div class="columns">
+              
+              <table width="100%">  
+                  <tr>
+                    <td class=""><span class="icon"><i class="fa fa-cube"></i></span>javascript</td>
+                    <td class="has-text-right" >
+                        <div class="tag-number">1</div>
+                      
+                    </td>
+                    
+                  </tr>
+              </table>
+              
+            </div>
+          </a>
+      </li>
+      <li class="no-children">
+          <a href="/tags/kotlin">
+            <div class="columns">
+              
+              <table width="100%">  
+                  <tr>
+                    <td class=""><span class="icon"><i class="fa fa-cube"></i></span>kotlin</td>
+                    <td class="has-text-right" >
+                        <div class="tag-number">1</div>
+                      
+                    </td>
+                    
+                  </tr>
+              </table>
+              
+            </div>
+          </a>
+      </li>
+      <li class="no-children">
+          <a href="/tags/microservices">
+            <div class="columns">
+              
+              <table width="100%">  
+                  <tr>
+                    <td class=""><span class="icon"><i class="fa fa-cube"></i></span>microservices</td>
+                    <td class="has-text-right" >
+                        <div class="tag-number">1</div>
+                      
+                    </td>
+                    
+                  </tr>
+              </table>
+              
+            </div>
+          </a>
+      </li>
+      <li class="no-children">
+          <a href="/tags/multicloud">
+            <div class="columns">
+              
+              <table width="100%">  
+                  <tr>
+                    <td class=""><span class="icon"><i class="fa fa-cube"></i></span>multicloud</td>
+                    <td class="has-text-right" >
+                        <div class="tag-number">1</div>
+                      
+                    </td>
+                    
+                  </tr>
+              </table>
+              
+            </div>
+          </a>
+      </li>
+      <li class="no-children">
+          <a href="/tags/multiprocess">
+            <div class="columns">
+              
+              <table width="100%">  
+                  <tr>
+                    <td class=""><span class="icon"><i class="fa fa-cube"></i></span>multiprocess</td>
+                    <td class="has-text-right" >
+                        <div class="tag-number">1</div>
+                      
+                    </td>
+                    
+                  </tr>
+              </table>
+              
+            </div>
+          </a>
+      </li>
+      <li class="no-children">
+          <a href="/tags/python">
+            <div class="columns">
+              
+              <table width="100%">  
+                  <tr>
+                    <td class=""><span class="icon"><i class="fa fa-cube"></i></span>python</td>
+                    <td class="has-text-right" >
+                        <div class="tag-number">1</div>
+                      
+                    </td>
+                    
+                  </tr>
+              </table>
+              
+            </div>
+          </a>
+      </li>
+      <li class="no-children">
+          <a href="/tags/raspberry_pi">
+            <div class="columns">
+              
+              <table width="100%">  
+                  <tr>
+                    <td class=""><span class="icon"><i class="fa fa-cube"></i></span>raspberry_pi</td>
+                    <td class="has-text-right" >
+                        <div class="tag-number">1</div>
+                      
+                    </td>
+                    
+                  </tr>
+              </table>
+              
+            </div>
+          </a>
+      </li>
+      <li class="no-children">
+          <a href="/tags/rest">
+            <div class="columns">
+              
+              <table width="100%">  
+                  <tr>
+                    <td class=""><span class="icon"><i class="fa fa-cube"></i></span>REST</td>
+                    <td class="has-text-right" >
+                        <div class="tag-number">1</div>
+                      
+                    </td>
+                    
+                  </tr>
+              </table>
+              
+            </div>
+          </a>
+      </li>
+      <li class="no-children">
+          <a href="/tags/webgl">
+            <div class="columns">
+              
+              <table width="100%">  
+                  <tr>
+                    <td class=""><span class="icon"><i class="fa fa-cube"></i></span>WebGL</td>
+                    <td class="has-text-right" >
+                        <div class="tag-number">1</div>
+                      
+                    </td>
+                    
+                  </tr>
+              </table>
+              
+            </div>
+          </a>
+      </li></ul>
+  </div>
+</div>
+<script src="/js/jquery-2.2.4.893e90f6230962e42231635df650f20544ad22affc3ee396df768eaa6bc5a6a2.js" integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI="></script>
+  <script src="/js/feather.4.22.0.1ab07abeb9975f283f6b5f29451981be680fbf77ea778f991d457511d210476a.js" integrity="sha256-GrB6vrmXXyg/a18pRRmBvmgPv3fqd4&#43;ZHUV1EdIQR2o="></script>
+  <script src="/js/modernizr-3.6.0.e013a1e54e3c19d83537ba42b900d34451e5e4b2e789be27a02ac9b152edb741.js" integrity="sha256-4BOh5U48Gdg1N7pCuQDTRFHl5LLnib4noCrJsVLtt0E="></script>
+  <script src="/js/refresh.62c1a9b7d85bcf4d944cd585a01dfa8fb15112a7d2cf9fb819db20493bfe7484.js" integrity="sha256-YsGpt9hbz02UTNWFoB36j7FREqfSz5&#43;4GdsgSTv&#43;dIQ="></script><script>
+  window.MathJax = {
+    loader: {
+      load: ['core', 'input/tex-base', 'output/chtml'],  
+      source: {
+        'core': '\/js\/mathjax\/core.d48fedf25c74c54fa6bf79646de92b02155872bdc4f5f7d0bbfc662523d8b4f5.js',
+        'input/tex-base': '\/js\/mathjax\/tex-base.1b68b8741dfc54e8f7222f88bea8ffcfc57ac54b2a2d8f4edf6800aa44d49441.js',
+        'output/chtml': '\/js\/mathjax\/chtml.926cd166e0f8c1f8a566a718d60c9c58a2b7142b156d30d5f02cec7c3b0ad60a.js',
+        'output/chtml/fonts/tex': '\/js\/mathjax\/tex_out.b8b2bb939c0dae84bf1390bfe6d32af13e83f647cdac01d544d2a7a517477e9d.js'
+      },
+    },
+    chtml: {
+      fontURL: '/fonts' 
+    },
+  };
+</script><script src="/js/mathjax/startup.234a2513e6bdbc1eee06ca19abceca30fe4034e82afb373c08274c1ba2feb1a6.js" integrity="sha256-I0olE&#43;a9vB7uBsoZq87KMP5ANOgq&#43;zc8CCdMG6L&#43;saY="></script>
+  <script src="/js/highlight.9.18.1.b1c58829c55afcc1f568022af4b08ed8976da404d2990b7535bd8e19c0e3310c.js" integrity="sha256-scWIKcVa/MH1aAIq9LCO2JdtpATSmQt1Nb2OGcDjMQw="></script>
+  <script src="/js/highlightjs-line-numbers.2.7.0.min.ddfe282e07b7ec1ed069c23f92c7c8216ddb3f1879c4e962d37fd52adbd15a05.js" integrity="sha256-3f4oLge37B7QacI/ksfIIW3bPxh5xOli03/VKtvRWgU="></script><script>
+  hljs.initHighlightingOnLoad();
+  hljs.initLineNumbersOnLoad();
+  document.addEventListener('DOMContentLoaded', (event) => {
+    document.querySelectorAll('.codeinline').forEach((block) => {
+      hljs.highlightBlock(block);
+    });
+  });
+</script>
+
+</body>
+</html>

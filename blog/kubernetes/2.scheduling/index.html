@@ -1,0 +1,1051 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head><link rel="icon" href="/favicon_main.svg"><meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+<meta http-equiv="x-ua-compatible" content="ie=edge" /><meta property="og:url"  content="https://franckies.github.io/blog/kubernetes/2.scheduling/" />
+    <meta property="og:type" content="article" /><meta property="og:title" content="Kubernetes Scheduling" /><meta property="og:description" content="Kubernetes scheduling principles." /><meta property="og:image:width"  content="600" />
+        <meta property="og:image:height" content="407" /><meta property="og:image" content="https://franckies.github.io/blog/kubernetes/2.scheduling/images/tanintsandaffinity_hu264c48b2713a446a1b9671ab18934a66_35650_600x0_resize_q75_box.jpg" /><title>Francesco Semeraro - Personal website and blog - Kubernetes Scheduling</title>
+
+    
+<link href="https://fonts.googleapis.com/css?family=Open&#43;Sans" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Open&#43;Sans" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Open&#43;Sans" rel="stylesheet"><link rel="stylesheet" type="text/css" href="/css/style.6fd7fa42c7b7fe49cfeceeed650d33cb8d1cdbfe842e514a22e57a6b712729aa.css" integrity="sha256-b9f6Qse3/knP7O7tZQ0zy40c2/6ELlFKIuV6a3EnKao=">
+<link rel="stylesheet" type="text/css" href="/css/monokai-sublime.9.15.8.min.91376415864fdd3a92be524052267afece4bdb1bb8c6c754f5e60c5ac28e93be.css" integrity="sha256-kTdkFYZP3TqSvlJAUiZ6/s5L2xu4xsdU9eYMWsKOk74=">
+<link rel="stylesheet" type="text/css" href="/css/all.min.2d91c07e15fc26f2697117b326256c0a2b0586dd12a15c622a53cd47a9e54a1d.css" integrity="sha256-LZHAfhX8JvJpcRezJiVsCisFht0SoVxiKlPNR6nlSh0=">
+<link rel="stylesheet" type="text/css" href="/css/refresh.14a12fb7813ddba2888e4b3b9416cf53c14139b12f6c4f24fb63c8720d9599f7.css" integrity="sha256-FKEvt4E926KIjks7lBbPU8FBObEvbE8k&#43;2PIcg2Vmfc=">
+<link rel="stylesheet" type="text/css" href="/css/devicon.min.149016fbf45c8bc157d6f55ce3ee875feaa3f90446bf7d151fbc16a9f21a8859.css" integrity="sha256-FJAW&#43;/Rci8FX1vVc4&#43;6HX&#43;qj&#43;QRGv30VH7wWqfIaiFk=">
+    
+
+  </head>
+  <body>
+     
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6L38PPSN83"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6L38PPSN83');
+</script>
+    <div id="preloader">
+      <div id="status"></div>
+    </div><nav class="navbar is-fresh is-transparent no-shadow" role="navigation" aria-label="main navigation">
+  <div class="container">
+    <div class="navbar-brand">
+
+      
+      
+      
+      <a class="navbar-item">
+        <div class="menu-icon-wrapper left-menu-icon-wrapper" style="visibility: visible;">
+          <svg width="1000px" height="1000px">
+            <path class="path1" d="M 300 400 L 700 400 C 900 400 900 750 600 850 A 400 400 0 0 1 200 200 L 800 800"></path>
+            <path class="path2" d="M 300 500 L 700 500"></path>
+            <path class="path3" d="M 700 600 L 300 600 C 100 600 100 200 400 150 A 400 380 0 1 1 200 800 L 800 200"></path>
+          </svg>
+          <button id="menu-icon-trigger" class="menu-icon-trigger"></button>
+        </div>
+        <div class="navbar-item left-menu-icon-wrapper">
+          Tags
+        </div>
+      </a>
+
+      <div class="navbar-item is-expanded"></div>
+      <a class="navbar-item is-hidden-desktop">  
+        <div data-target="navbar-menu" class="navbar-item right-menu-icon-wrapper is-hidden-desktop">
+          Menu
+        </div>
+        <div data-target="navbar-menu" class="menu-icon-wrapper right-menu-icon-wrapper" style="visibility: visible;">
+          <svg width="1000px" height="1000px">
+            <path class="path1" d="M 300 400 L 700 400 C 900 400 900 750 600 850 A 400 400 0 0 1 200 200 L 800 800"></path>
+            <path class="path2" d="M 300 500 L 700 500"></path>
+            <path class="path3" d="M 700 600 L 300 600 C 100 600 100 200 400 150 A 400 380 0 1 1 200 800 L 800 200"></path>
+          </svg>
+          <button id="menu-icon-trigger" class="menu-icon-trigger"></button>
+        </div>
+      </a>
+    </div><div id="navbar-menu" class="navbar-menu is-static">
+      
+      <div class="navbar-end">
+        
+          <a href="/" class="navbar-item is-secondary">Homepage</a><a href="/about/" class="navbar-item is-secondary">About Me</a><a href="/projects/" class="navbar-item is-secondary">Projects</a><a href="/seminars/" class="navbar-item is-secondary">Seminars</a>
+            <div class="navbar-item has-dropdown is-hoverable">
+              <a href="/blog/" class="navbar-link">Blog</a>
+              <div class="navbar-dropdown">
+                <a href="/blog/docker/" class="navbar-item">Docker</a><a href="/blog/kubernetes/" class="navbar-item">Kubernetes</a></div>
+            </div>
+        
+        
+        
+        
+        
+        
+        
+      </div>
+    </div>
+  </div>
+</nav>
+<nav id="navbar-clone" class="navbar is-fresh is-transparent" role="navigation" aria-label="main navigation">
+  <div class="container">
+      <div class="navbar-brand">
+  
+        
+        
+        
+        <a class="navbar-item">
+          <div class="menu-icon-wrapper left-menu-icon-wrapper" style="visibility: visible;">
+            <svg width="1000px" height="1000px">
+              <path class="path1" d="M 300 400 L 700 400 C 900 400 900 750 600 850 A 400 400 0 0 1 200 200 L 800 800"></path>
+              <path class="path2" d="M 300 500 L 700 500"></path>
+              <path class="path3" d="M 700 600 L 300 600 C 100 600 100 200 400 150 A 400 380 0 1 1 200 800 L 800 200"></path>
+            </svg>
+            <button id="menu-icon-trigger" class="menu-icon-trigger"></button>
+          </div>
+          <div class="navbar-item left-menu-icon-wrapper">
+            Tags
+          </div>
+        </a>
+  
+        <div class="navbar-item is-expanded"></div>
+        <a class="navbar-item is-hidden-desktop">  
+          <div data-target="cloned-navbar-menu" class="navbar-item right-menu-icon-wrapper is-hidden-desktop">
+            Menu
+          </div>
+          <div data-target="cloned-navbar-menu" class="menu-icon-wrapper right-menu-icon-wrapper" style="visibility: visible;">
+            <svg width="1000px" height="1000px">
+              <path class="path1" d="M 300 400 L 700 400 C 900 400 900 750 600 850 A 400 400 0 0 1 200 200 L 800 800"></path>
+              <path class="path2" d="M 300 500 L 700 500"></path>
+              <path class="path3" d="M 700 600 L 300 600 C 100 600 100 200 400 150 A 400 380 0 1 1 200 800 L 800 200"></path>
+            </svg>
+            <button id="menu-icon-trigger" class="menu-icon-trigger"></button>
+          </div>
+        </a>
+      </div><div id="cloned-navbar-menu" class="navbar-menu is-static">
+        <div class="navbar-end"><a href="/" class="navbar-item is-secondary">Homepage</a><a href="/about/" class="navbar-item is-secondary">About Me</a><a href="/projects/" class="navbar-item is-secondary">Projects</a><a href="/seminars/" class="navbar-item is-secondary">Seminars</a><div class="navbar-item has-dropdown is-hoverable">
+                <a href="/blog/" class="navbar-link">Blog</a>
+                <div class="navbar-dropdown">
+                  <a href="/blog/docker/" class="navbar-item">Docker</a><a href="/blog/kubernetes/" class="navbar-item">Kubernetes</a></div>
+              </div>
+          
+          
+          
+
+          
+          
+          
+        
+        </div>
+      </div>
+    </div>
+  </nav>
+<section class="section is-medium">
+  <div class="container">
+    <div class="columns">
+      <div class="column is-centered-tablet-portrait">
+        <h1 class="title is-2 section-title">Kubernetes Scheduling</h1>
+        <h5 class="subtitle is-5 is-muted"></h5>
+        <div class="divider"></div>
+        
+        <section class="section content has-text-justified">
+          <h1 id="manual-scheduling">Manual scheduling</h1>
+<p>Manual scheduling happens when you want to specify on which exact node a POD must be scheduled. Each POD definition has a property names <em>nodeName</em> which is by default empty.
+To manually assign a POD to a specify node all you have to do is assign this property to the node name. T</p>
+<pre><code>pod-definition.yaml
+-------------------
+apiVersion: v1
+kind: Pod
+metadata: 
+    name: nginx-pod
+    labels: 
+        app: nginx
+spec:
+    containers:
+    - name: nginx-container
+      image: nginx:latest
+    nodeName: mynode1
+</code></pre><p>Note that you can only specify the nodeName property at <em>creation time</em>, therefore if you want to manually schedule an already existing POD, a POST request to the <strong>POD binding</strong> API must be performed using as body the JSON version of the following definition:</p>
+<pre><code>pod-binding-definition.yaml
+-------------------
+apiVersion: v1 
+kind: Binding
+metadata:
+    name: nginx
+target:
+    apiVersion: v1
+    kind: Node
+    name: mynode1
+</code></pre><p>To te following API:</p>
+<pre><code>http://&lt;api_server&gt;/api/v1/namespaces/default/pods/&lt;pod_name&gt;/binding/
+</code></pre><h1 id="labels-and-selectors">Labels and selectors</h1>
+<p>Labels allows us to identify a given resource with a given property, while selectors help us to filter resources based on labels' values.
+In the same way, in Kubernetes it is possible to group resources using labels and selectors.
+We can label a pod using the label property in the definition file. In the following example, the label app is assigned to nginx in the nginx POD.</p>
+<pre><code>pod-definition.yaml
+-------------------
+apiVersion: v1
+kind: Pod
+metadata: 
+    name: nginx-pod
+    labels: 
+        app: nginx
+spec:
+    containers:
+    - name: nginx-container
+      image: nginx:latest
+    nodeName: mynode1
+</code></pre><p>Notice that when dealing with replicasets, labels can be defined in two places:</p>
+<ul>
+<li>Defined in the <strong>template</strong> section are the label configured on the PODs</li>
+<li>Defined in the <strong>replicaset metadata</strong> section are the ones related to the replicaset itself.</li>
+</ul>
+<p>In particular, the replicaset selects the PODs included in the set by matching the labels created on the PODs (template section) with the labels specified in the selector property. See the example below for details:</p>
+<pre><code>replicaset.yaml
+-------------------
+apiVersion: apps/v1
+kind: ReplicationSet
+metadata: 
+    name: nginx-rs
+    labels: 
+        app: nginx # Replicaset label
+spec:
+    replicas: 3   
+    selector:
+        matchLabels:
+            app: nginx # Replicaset includes all PODs having this label
+    template:    
+        metadata: 
+            name: nginx-pod
+            labels: 
+                app: nginx # POD label
+        spec:
+            containers:
+            - name: nginx-container
+            image: nginx:latest
+</code></pre><p>It works the same for other objects like services or deployments.</p>
+<p>To simply label a kubernetes object, use the following command:</p>
+<pre><code>kubectl label &lt;object&gt; &lt;name&gt; key=value
+</code></pre><p>For instance to label the node <code>node01</code> with label <code>color=blue</code>:</p>
+<pre><code>kubectl label node node01 color=blue
+</code></pre><h1 id="annotations">Annotations</h1>
+<p>Annotations are used to record some information about the Kubernetes object, like build version, deploy version, etc.</p>
+<pre><code>pod-definition.yaml
+-------------------
+apiVersion: v1
+kind: Pod
+metadata: 
+    name: nginx-pod
+    labels: 
+        app: nginx
+    annotations:
+        buildVersion: 1.1
+spec:
+    containers:
+    - name: nginx-container
+      image: nginx:latest
+    nodeName: mynode1
+</code></pre><p>To get all pods having a given label, just run the following:</p>
+<pre><code>kubectl get pods -l &quot;label=value&quot;
+</code></pre><p>or using the selector flag</p>
+<pre><code>kubectl get pods --selector label=value
+</code></pre><h1 id="taints-and-tolerations">Taints and tolerations</h1>
+<p>The concepts of taints and tolerations allows us to define which pods can be scheduled on which nodes.</p>
+<p>By default, none of the PODs can tolerate any taint. This means that if we put a <strong>taint</strong> on a node (let&rsquo;s say, <code>app=myapp</code>), no pods with the default configuration will be scheduled on that node.
+To enable some PODs to be scheduled on a tainted nade, we add a <strong>toleration</strong> to the PODs, so that PODs became <em>tolerant to particular taints</em>. In this way, tolerant PODs will be scheduled on tainted nodes.</p>
+<p>A taint can be set on a node using the following command:</p>
+<pre><code>kubectl taint nodes node-name key=value:taint-effect
+</code></pre><p>There are three taint effects:</p>
+<ul>
+<li><strong>NoSchedule</strong>: The scheduler will not schedule any non-tolerant POD on the given node.</li>
+<li><strong>PreferNoSchedule</strong>: The scheduler will try to not schedule any non-tolerant POD on the given node (it is not guaranteed).</li>
+<li><strong>NoExecute</strong>: New PODs will not be scheduled on that PODs, and existing PODs on that node will be <em>evicted</em> if they do not implement the corresponding toleration.</li>
+</ul>
+<p>For instance,</p>
+<pre><code>kubectl taint nodes node1 app=myapp:NoSchedule
+</code></pre><p>Toleration can be instead added to PODs using the YAML manifests:</p>
+<pre><code>pod-definition.yaml
+-------------------
+apiVersion: v1
+kind: Pod
+metadata: 
+    name: nginx-pod
+    labels: 
+        app: nginx
+spec:
+    containers:
+    - name: nginx-container
+      image: nginx:latest
+    tolerations:
+    - key: &quot;app&quot;
+      operator: &quot;Equal&quot;
+      value: &quot;myapp&quot;
+      effect: &quot;NoSchedule&quot;
+</code></pre><p>Remember that taints and tolerations <strong>do not ensure</strong> that <strong>a particular POD will be placed in a particular node</strong>, but they just allows you to specify if a given POD can or cannot be scheduled on a given node.</p>
+<h2 id="taints-and-master-nodes">Taints and master nodes</h2>
+<p>When a Kubernetes cluster is created, a taint on the master node is <em>automatically set</em> to specify no POD (except from system PODs) can be scheduled on the master nodes.
+The taint can be seen by running:</p>
+<pre><code>kubectl describe node &lt;master_node&gt; | grep Taint
+---------
+Taints:     node-role.kubernetes.io/master:NoSchedule
+</code></pre><p>This is a best practice and should not be changed.</p>
+<h1 id="node-selectors-and-node-affinity">Node selectors and Node affinity</h1>
+<p>If in your Kubernetes setup you have nodes with different sizes, it could be useful to specify which POD should be on which node to ensure that a given node doesn&rsquo;t go out of resource limits in case a demanding application is scheduled on that node.
+There are two ways to accomplish this task:</p>
+<ul>
+<li><strong>Node selector</strong></li>
+<li><strong>Node affinity</strong></li>
+</ul>
+<h2 id="node-selectors">Node selectors</h2>
+<p>Specify the node selector in the corresponding property. This property is based on <em>labels</em> to identify the node where the pod will be scheduled. For instance, in the following example the POD will be scheduled on nodes having the <code>size=large</code> label.</p>
+<pre><code>pod-definition.yaml
+-------------------
+apiVersion: v1
+kind: Pod
+metadata: 
+    name: nginx-pod
+    labels: 
+        app: nginx
+spec:
+    containers:
+    - name: nginx-container
+      image: nginx:latest
+    nodeSelector: 
+        size: large
+</code></pre><h1 id="node-affinity">Node affinity</h1>
+<p>If the scheduling requirements are more complex (for instance, schedule a POD on medium or large nodes), then we need node affinity. For instance:</p>
+<pre><code>pod-definition.yaml
+-------------------
+apiVersion: v1
+kind: Pod
+metadata: 
+    name: nginx-pod
+    labels: 
+        app: nginx
+spec:
+    containers:
+    - name: nginx-container
+      image: nginx:latest
+    affinity: 
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution: 
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: size
+                operator: In
+                values:
+                - large
+</code></pre><p>Notice that this is much more complex but allows us to specify more complex criteria for node selection.</p>
+<p>One of the possibilities node affinity gives us, is the fact to specify where the node affinity filter should be evaluated:</p>
+<ul>
+<li><em>DuringScheduling</em>: means that the rule will be evaluated only if a POD does not exists and is then created. This means that if a POD exists, and the nodeAffinity property is changed at runtime, the rule will not be evaluated until the POD is rescheduled (deleted and recreated).</li>
+<li><em>DuringExecution</em>: means that the rule will always be evaluated. So the POD of the previous example will be evicted and rescheduled on the node satisfying the affinity rule.</li>
+</ul>
+<h1 id="node-taints-vs-node-affinity">Node taints vs Node affinity</h1>
+<p>To dedicate nodes to specific PODs, the way to go is to use a combination of taints/tolerations and node affinity.
+Suppose we want to schedule only red pods on red nodes, blue pods on blue nodes and green pods on green nodes.</p>
+<ul>
+<li>If we just use taints and tolerations, then it is not ensured that a red pod will be scheduled on a red node, because no red pod can be scheduled on the red node, but a red pod can also be scheduled on a non-tainted node.</li>
+<li>If we just use affinity, then it is not guaranteed that a pod without any label will not be scheduled on a red node.</li>
+</ul>
+<p>Therefore, using a combination of the two, we can taint each node with its color and assign to each pod a label with its own color. Then, we set node affinity on each pod to specify that a given pod can be only scheduled on a node having a given label.</p>
+<p><img src="./images/tanintsandaffinity.jpg" alt="taints"></p>
+<h1 id="resources-requests-and-limits">Resources requests and limits</h1>
+<p>Whenever a POD is scheduled on a node, it consumes the resources of that specific node. The scheduler decides in which node a POD should go based on the fact that the node has sufficient resources to host the node. If any node has enough resources, then Kubernetes will not schedule the POD, writing in the events <em>&ldquo;Insufficient CPU&rdquo;</em>.</p>
+<h2 id="resources-requests">Resources requests</h2>
+<p>By default, to schedule a POD, Kubernetes requests for each container in the POD a minimum of <strong>0.5 CPUs</strong> and <strong>256Mi of memory</strong>. When the scheduler schedules the POD on a node, uses these values to decide if the node has enough resources.
+These values can be customized:</p>
+<pre><code>pod-definition.yaml
+-------------------
+apiVersion: v1
+kind: Pod
+metadata: 
+    name: nginx-pod
+    labels: 
+        app: nginx
+spec:
+    containers:
+    - name: nginx-container
+      image: nginx:latest
+    ports:
+    - containerPort: 8080
+    resources:
+        requests:
+            memory: &quot;1Gi&quot;
+            cpu: 1
+</code></pre><p>Notice that you can also express CPU in millicores, where 100m stands for 0.1 cores.</p>
+<h2 id="resources-limits">Resources limits</h2>
+<p>By default, a container gets a limit of <strong>1 CPU</strong> and <strong>512 Mi memory</strong>. These limits should be changed by specifying them into the manifests:</p>
+<pre><code>pod-definition.yaml
+-------------------
+apiVersion: v1
+kind: Pod
+metadata: 
+    name: nginx-pod
+    labels: 
+        app: nginx
+spec:
+    containers:
+    - name: nginx-container
+      image: nginx:latest
+    ports:
+    - containerPort: 8080
+    resources:
+        requests:
+            memory: &quot;1Gi&quot;
+            cpu: 1
+        limits:
+            memory: &quot;2Gi&quot;
+            cpu: 2
+</code></pre><p>If a container tries to use more resources than the specified limits, then that&rsquo;s what happens:</p>
+<ul>
+<li>More CPU: A container cannot use more CPU than the specified limit, because Kubernetes <strong>throttle</strong> the CPU so that it does not goes beyond the specified limits.</li>
+<li>More memory: A container can use more memory resources than its limit, but when this happens, it will be terminated by Kubernetes.</li>
+</ul>
+<p><strong>Remember that requests and limits are set for each container in the POD</strong></p>
+<h2 id="note-on-default-resource-requirements-and-limits">Note on default resource requirements and limits</h2>
+<p>&ldquo;When a pod is created the containers are assigned a default CPU request of .5 and memory of 256Mi&rdquo;. For the POD to pick up those defaults you must have first set those as default values for request and limit by creating a LimitRange in that namespace.</p>
+<pre><code>apiVersion: v1
+kind: LimitRange
+metadata:
+  name: mem-limit-range
+spec:
+  limits:
+  - default:
+      memory: 512Mi
+    defaultRequest:
+      memory: 256Mi
+    type: Container
+</code></pre><p><a href="https://kubernetes.io/docs/tasks/administer-cluster/manage-resources/memory-default-namespace/">https://kubernetes.io/docs/tasks/administer-cluster/manage-resources/memory-default-namespace/</a></p>
+<pre><code>apiVersion: v1
+kind: LimitRange
+metadata:
+  name: cpu-limit-range
+spec:
+  limits:
+  - default:
+      cpu: 1
+    defaultRequest:
+      cpu: 0.5
+    type: Container
+</code></pre><p><a href="https://kubernetes.io/docs/tasks/administer-cluster/manage-resources/cpu-default-namespace/">https://kubernetes.io/docs/tasks/administer-cluster/manage-resources/cpu-default-namespace/</a></p>
+<h2 id="a-quick-note-on-editing-pods-and-deployments">A quick note on editing PODs and Deployments</h2>
+<h3 id="edit-a-pod">Edit a POD</h3>
+<p>Remember, you CANNOT edit specifications of an existing POD other than the below.</p>
+<ul>
+<li>
+<p><code>spec.containers[*].image</code></p>
+</li>
+<li>
+<p><code>spec.initContainers[*].image</code></p>
+</li>
+<li>
+<p><code>spec.activeDeadlineSeconds</code></p>
+</li>
+<li>
+<p><code>spec.tolerations</code></p>
+</li>
+</ul>
+<p>For example you cannot edit the environment variables, service accounts, resource limits of a running pod.</p>
+<p>In order to do this, you can:</p>
+<ol>
+<li>Extract the pod definition in YAML format to a file using the command:</li>
+</ol>
+<pre><code>kubectl get pod webapp -o yaml &gt; my-new-pod.yaml
+</code></pre><ol start="2">
+<li>Modify the YAML.</li>
+<li>Delete the existing POD.</li>
+<li>Recreate the POD using the YAML manifest.</li>
+</ol>
+<h1 id="daemonsets">DaemonSets</h1>
+<p>Daemonsets are like replicasets, but they allows you to run a copy of the POD on each node of the cluster. The daemonset ensures that one copy of the POD is always present on all nodes of the cluster.</p>
+<p>A daemonset can be used in the following use cases:</p>
+<ol>
+<li><strong>Monitoring agent</strong> which has to collect logs or metrics from each process / container in the nodes.</li>
+<li><strong>Kube proxy</strong>: <code>kube-proxy</code> can be deployed as a daemonset in the cluster.</li>
+<li><strong>Networking</strong></li>
+</ol>
+<p>Below an example of daemonset manifest.</p>
+<pre><code>pod-definition.yaml
+-------------------
+apiVersion: apps/v1
+kind: DaemonSet
+metadata: 
+    name: monitoring-ds
+    labels: 
+        app: monitoring-ds
+spec:
+    template:
+        metadata: 
+            name: monitoring-ds
+            labels: 
+                app: monitoring-ds
+        spec:
+            containers:
+            - name: monitoring-ds
+            image: monitoring-ds:latest
+    selector:
+        matchLabels:
+            app: monitoring-ds
+</code></pre><p>From Kubernetes <code>v1.12</code> on, the DaemonSets uses the default scheduler and the <strong>NodeAffinity</strong> concept to schedule a POD on each node.</p>
+<h1 id="static-pods">Static pods</h1>
+<p>The <code>kubelet</code> can manage a node independently. If we just have <code>kubelet</code> and docker installed on one node, <code>kubelet</code> is able to create pods. But how can you provide the pod definition file (yaml) without an api server? <code>kubelet</code> periodically checks a given directory for files (manifests) and creates all pods found that have manifests defined in the given directory. Pods created by <code>kubelet</code> alone without the intervention of api servers or other components are called <strong>static pods</strong>.
+Beware that is only possible to create pods with this mechanisms, not replicasets or other components.</p>
+<p>The designated folder can be any directory on the host, and can be configured as an option when starting the <code>kubelet</code> service. The option is called <code>--pod-manifest-path=/etc/Kubernetes/manifests</code>, set to <code>/etc/Kubernetes/manifests</code> in the example.</p>
+<p>Notice that when there is the api-server, i.e. the <code>kubelet</code> is installed on a node part of a cluster, the <code>kubelet</code> is able to create pods and other resources since it also exposes an http API.
+Moreover, if the node is part of a cluster, the <strong>static pods</strong> are seen using <code>kubectl get pods</code> command as usual, but what you see is just a &ldquo;mirror&rdquo; copy of the actual pod. Indeed, it is not possible to delete or modify static pods as they were normal pods, and all static pods have at the end the node name (e.g. <code>mypod-node01</code>).</p>
+<p>Notice that <strong>static pods</strong> are exactly the way how Kubernetes managed to deploy its core services (control plane components) into the cluster itself as pods.
+This can be done as follows:</p>
+<ul>
+<li>Install kubelet on the master nodes</li>
+<li>Place definition files of control plane components (api server, etc.) in the designated folder</li>
+<li>Kubelet will take care of setting up the control plane components as static pods, and also to restarts them in case of failures.</li>
+</ul>
+<h1 id="multiple-scheduler">Multiple scheduler</h1>
+<p>What if you had an application which requires that some checks have to be performed before scheduling it on a given node?
+In order to do so, it is possible to write an deploy to Kubernetes a custom scheduler, setting it as the default scheduler or as an additional scheduler to the default one.</p>
+<p>When creating a pod, you can instruct Kubernetes to use a given scheduler.</p>
+<pre><code>apiVersion: v1
+kind: Pod
+metadata:
+    name: nginx
+spec:
+    containers:
+    - image: nginx
+      name: nginx
+    schedulerName: my-custom-scheduler
+</code></pre><p>You can use the</p>
+<pre><code>kubectl get events
+</code></pre><p>command to see all the events in the current namespace, including the scheduling events and the source (scheduler) starting it.</p>
+
+        </section>
+      </div>
+    </div>
+  </div>  
+  </section>
+<footer class="footer footer-dark">
+  <div class="container">
+    <div class="columns">
+      <div class="column">
+        <img src="/footer.svg" alt="">
+        
+      </div>
+      
+    <div class="column">
+        <div class="footer-column">
+          <div class="footer-header">
+              <h3>Website</h3>
+          </div>
+          <ul class="link-list"><li><a href="/credits/">
+                  <span class="icon"><i class="fa fa-cube"></i></span>
+                  Credits
+                </a></li>
+            <li><a href="/tags/">
+                <span class="icon"><i class="fa fa-tag"></i></span> 
+                All Tags
+              </a></li>
+          </ul>
+        </div>
+      </div>
+    
+      
+      <div class="column">
+        <div class="footer-column">
+          <div class="footer-header">
+              <h3>Contacts</h3>
+          </div>
+          <ul class="link-list">
+            
+            <li>
+              <a href="https://www.linkedin.com/in/francesco-semeraro-09b305190" target="_blank">
+                <span class="icon"><i class="fab fa-linkedin"></i></span>
+                
+                  LinkedIn
+                
+              </a>
+            </li>
+            
+            
+            <li>
+              <a href="https://github.com/franckies" target="_blank">
+                <span class="icon"><i class="fab fa-github-square"></i></span>
+                
+                  Github
+                
+              </a>
+            </li>
+                         
+            
+            <li>
+              <a href="mailto:fk.semeraro@gmail.com" target="_blank">
+                <span class="icon"><i class="fa fa-envelope"></i></span>
+                
+                  Email
+                
+              </a>
+            </li>
+            
+                   
+                   
+            
+                   
+          </ul>
+        </div>
+      </div>
+      
+
+      
+      <div class="column">
+        <div class="footer-column">
+          <div class="footer-header">
+              <h3>Copyright</h3>
+          </div>
+          <ul class="link-list">
+            <li>
+              <a>
+                <span class="icon"><i class="fa fa-copyright"></i></span>
+                FS - 2021
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      
+
+    </div>
+  </div>
+</footer>
+    <div id="backtotop"><a href="#"></a></div><div class="sidebar scroll">
+  <div class="sidebar-header"><img src="/sidebar.svg" alt="">
+    
+    <a class="sidebar-close" href="javascript:void(0);">
+      <i data-feather="x"></i>
+    </a>
+  </div>
+  <div class="inner">
+    <ul class="sidebar-menu">
+      <li class="no-children"><a href="/tags/"><div class="columns">
+              <table width="100%">  
+                <tr>
+                  <td class="">
+                    <span class="icon"><i class="fa fa-cubes"></i></span>
+                    All Tags
+                  </td>
+                  <td class="has-text-right" >
+                      
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </a>
+      <li class="no-children">
+          <a href="/tags/cloud">
+            <div class="columns">
+              
+              <table width="100%">  
+                  <tr>
+                    <td class=""><span class="icon"><i class="fa fa-cube"></i></span>cloud</td>
+                    <td class="has-text-right" >
+                        <div class="tag-number">5</div>
+                      
+                    </td>
+                    
+                  </tr>
+              </table>
+              
+            </div>
+          </a>
+      </li>
+      <li class="no-children">
+          <a href="/tags/azure">
+            <div class="columns">
+              
+              <table width="100%">  
+                  <tr>
+                    <td class=""><span class="icon"><i class="fa fa-cube"></i></span>azure</td>
+                    <td class="has-text-right" >
+                        <div class="tag-number">3</div>
+                      
+                    </td>
+                    
+                  </tr>
+              </table>
+              
+            </div>
+          </a>
+      </li>
+      <li class="no-children">
+          <a href="/tags/docker">
+            <div class="columns">
+              
+              <table width="100%">  
+                  <tr>
+                    <td class=""><span class="icon"><i class="fa fa-cube"></i></span>docker</td>
+                    <td class="has-text-right" >
+                        <div class="tag-number">2</div>
+                      
+                    </td>
+                    
+                  </tr>
+              </table>
+              
+            </div>
+          </a>
+      </li>
+      <li class="no-children">
+          <a href="/tags/kubernetes">
+            <div class="columns">
+              
+              <table width="100%">  
+                  <tr>
+                    <td class=""><span class="icon"><i class="fa fa-cube"></i></span>kubernetes</td>
+                    <td class="has-text-right" >
+                        <div class="tag-number">2</div>
+                      
+                    </td>
+                    
+                  </tr>
+              </table>
+              
+            </div>
+          </a>
+      </li>
+      <li class="no-children">
+          <a href="/tags/terraform">
+            <div class="columns">
+              
+              <table width="100%">  
+                  <tr>
+                    <td class=""><span class="icon"><i class="fa fa-cube"></i></span>terraform</td>
+                    <td class="has-text-right" >
+                        <div class="tag-number">2</div>
+                      
+                    </td>
+                    
+                  </tr>
+              </table>
+              
+            </div>
+          </a>
+      </li>
+      <li class="no-children">
+          <a href="/tags/api">
+            <div class="columns">
+              
+              <table width="100%">  
+                  <tr>
+                    <td class=""><span class="icon"><i class="fa fa-cube"></i></span>api</td>
+                    <td class="has-text-right" >
+                        <div class="tag-number">1</div>
+                      
+                    </td>
+                    
+                  </tr>
+              </table>
+              
+            </div>
+          </a>
+      </li>
+      <li class="no-children">
+          <a href="/tags/ar">
+            <div class="columns">
+              
+              <table width="100%">  
+                  <tr>
+                    <td class=""><span class="icon"><i class="fa fa-cube"></i></span>ar</td>
+                    <td class="has-text-right" >
+                        <div class="tag-number">1</div>
+                      
+                    </td>
+                    
+                  </tr>
+              </table>
+              
+            </div>
+          </a>
+      </li>
+      <li class="no-children">
+          <a href="/tags/c#">
+            <div class="columns">
+              
+              <table width="100%">  
+                  <tr>
+                    <td class=""><span class="icon"><i class="fa fa-cube"></i></span>c#</td>
+                    <td class="has-text-right" >
+                        <div class="tag-number">1</div>
+                      
+                    </td>
+                    
+                  </tr>
+              </table>
+              
+            </div>
+          </a>
+      </li>
+      <li class="no-children">
+          <a href="/tags/devops">
+            <div class="columns">
+              
+              <table width="100%">  
+                  <tr>
+                    <td class=""><span class="icon"><i class="fa fa-cube"></i></span>devops</td>
+                    <td class="has-text-right" >
+                        <div class="tag-number">1</div>
+                      
+                    </td>
+                    
+                  </tr>
+              </table>
+              
+            </div>
+          </a>
+      </li>
+      <li class="no-children">
+          <a href="/tags/flask">
+            <div class="columns">
+              
+              <table width="100%">  
+                  <tr>
+                    <td class=""><span class="icon"><i class="fa fa-cube"></i></span>flask</td>
+                    <td class="has-text-right" >
+                        <div class="tag-number">1</div>
+                      
+                    </td>
+                    
+                  </tr>
+              </table>
+              
+            </div>
+          </a>
+      </li>
+      <li class="no-children">
+          <a href="/tags/hmd">
+            <div class="columns">
+              
+              <table width="100%">  
+                  <tr>
+                    <td class=""><span class="icon"><i class="fa fa-cube"></i></span>hmd</td>
+                    <td class="has-text-right" >
+                        <div class="tag-number">1</div>
+                      
+                    </td>
+                    
+                  </tr>
+              </table>
+              
+            </div>
+          </a>
+      </li>
+      <li class="no-children">
+          <a href="/tags/hololens">
+            <div class="columns">
+              
+              <table width="100%">  
+                  <tr>
+                    <td class=""><span class="icon"><i class="fa fa-cube"></i></span>hololens</td>
+                    <td class="has-text-right" >
+                        <div class="tag-number">1</div>
+                      
+                    </td>
+                    
+                  </tr>
+              </table>
+              
+            </div>
+          </a>
+      </li>
+      <li class="no-children">
+          <a href="/tags/javascript">
+            <div class="columns">
+              
+              <table width="100%">  
+                  <tr>
+                    <td class=""><span class="icon"><i class="fa fa-cube"></i></span>javascript</td>
+                    <td class="has-text-right" >
+                        <div class="tag-number">1</div>
+                      
+                    </td>
+                    
+                  </tr>
+              </table>
+              
+            </div>
+          </a>
+      </li>
+      <li class="no-children">
+          <a href="/tags/kotlin">
+            <div class="columns">
+              
+              <table width="100%">  
+                  <tr>
+                    <td class=""><span class="icon"><i class="fa fa-cube"></i></span>kotlin</td>
+                    <td class="has-text-right" >
+                        <div class="tag-number">1</div>
+                      
+                    </td>
+                    
+                  </tr>
+              </table>
+              
+            </div>
+          </a>
+      </li>
+      <li class="no-children">
+          <a href="/tags/microservices">
+            <div class="columns">
+              
+              <table width="100%">  
+                  <tr>
+                    <td class=""><span class="icon"><i class="fa fa-cube"></i></span>microservices</td>
+                    <td class="has-text-right" >
+                        <div class="tag-number">1</div>
+                      
+                    </td>
+                    
+                  </tr>
+              </table>
+              
+            </div>
+          </a>
+      </li>
+      <li class="no-children">
+          <a href="/tags/multicloud">
+            <div class="columns">
+              
+              <table width="100%">  
+                  <tr>
+                    <td class=""><span class="icon"><i class="fa fa-cube"></i></span>multicloud</td>
+                    <td class="has-text-right" >
+                        <div class="tag-number">1</div>
+                      
+                    </td>
+                    
+                  </tr>
+              </table>
+              
+            </div>
+          </a>
+      </li>
+      <li class="no-children">
+          <a href="/tags/multiprocess">
+            <div class="columns">
+              
+              <table width="100%">  
+                  <tr>
+                    <td class=""><span class="icon"><i class="fa fa-cube"></i></span>multiprocess</td>
+                    <td class="has-text-right" >
+                        <div class="tag-number">1</div>
+                      
+                    </td>
+                    
+                  </tr>
+              </table>
+              
+            </div>
+          </a>
+      </li>
+      <li class="no-children">
+          <a href="/tags/python">
+            <div class="columns">
+              
+              <table width="100%">  
+                  <tr>
+                    <td class=""><span class="icon"><i class="fa fa-cube"></i></span>python</td>
+                    <td class="has-text-right" >
+                        <div class="tag-number">1</div>
+                      
+                    </td>
+                    
+                  </tr>
+              </table>
+              
+            </div>
+          </a>
+      </li>
+      <li class="no-children">
+          <a href="/tags/raspberry_pi">
+            <div class="columns">
+              
+              <table width="100%">  
+                  <tr>
+                    <td class=""><span class="icon"><i class="fa fa-cube"></i></span>raspberry_pi</td>
+                    <td class="has-text-right" >
+                        <div class="tag-number">1</div>
+                      
+                    </td>
+                    
+                  </tr>
+              </table>
+              
+            </div>
+          </a>
+      </li>
+      <li class="no-children">
+          <a href="/tags/rest">
+            <div class="columns">
+              
+              <table width="100%">  
+                  <tr>
+                    <td class=""><span class="icon"><i class="fa fa-cube"></i></span>REST</td>
+                    <td class="has-text-right" >
+                        <div class="tag-number">1</div>
+                      
+                    </td>
+                    
+                  </tr>
+              </table>
+              
+            </div>
+          </a>
+      </li>
+      <li class="no-children">
+          <a href="/tags/webgl">
+            <div class="columns">
+              
+              <table width="100%">  
+                  <tr>
+                    <td class=""><span class="icon"><i class="fa fa-cube"></i></span>WebGL</td>
+                    <td class="has-text-right" >
+                        <div class="tag-number">1</div>
+                      
+                    </td>
+                    
+                  </tr>
+              </table>
+              
+            </div>
+          </a>
+      </li></ul>
+  </div>
+</div>
+<script src="/js/jquery-2.2.4.893e90f6230962e42231635df650f20544ad22affc3ee396df768eaa6bc5a6a2.js" integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI="></script>
+  <script src="/js/feather.4.22.0.1ab07abeb9975f283f6b5f29451981be680fbf77ea778f991d457511d210476a.js" integrity="sha256-GrB6vrmXXyg/a18pRRmBvmgPv3fqd4&#43;ZHUV1EdIQR2o="></script>
+  <script src="/js/modernizr-3.6.0.e013a1e54e3c19d83537ba42b900d34451e5e4b2e789be27a02ac9b152edb741.js" integrity="sha256-4BOh5U48Gdg1N7pCuQDTRFHl5LLnib4noCrJsVLtt0E="></script>
+  <script src="/js/refresh.62c1a9b7d85bcf4d944cd585a01dfa8fb15112a7d2cf9fb819db20493bfe7484.js" integrity="sha256-YsGpt9hbz02UTNWFoB36j7FREqfSz5&#43;4GdsgSTv&#43;dIQ="></script><script>
+  window.MathJax = {
+    loader: {
+      load: ['core', 'input/tex-base', 'output/chtml'],  
+      source: {
+        'core': '\/js\/mathjax\/core.d48fedf25c74c54fa6bf79646de92b02155872bdc4f5f7d0bbfc662523d8b4f5.js',
+        'input/tex-base': '\/js\/mathjax\/tex-base.1b68b8741dfc54e8f7222f88bea8ffcfc57ac54b2a2d8f4edf6800aa44d49441.js',
+        'output/chtml': '\/js\/mathjax\/chtml.926cd166e0f8c1f8a566a718d60c9c58a2b7142b156d30d5f02cec7c3b0ad60a.js',
+        'output/chtml/fonts/tex': '\/js\/mathjax\/tex_out.b8b2bb939c0dae84bf1390bfe6d32af13e83f647cdac01d544d2a7a517477e9d.js'
+      },
+    },
+    chtml: {
+      fontURL: '/fonts' 
+    },
+  };
+</script><script src="/js/mathjax/startup.234a2513e6bdbc1eee06ca19abceca30fe4034e82afb373c08274c1ba2feb1a6.js" integrity="sha256-I0olE&#43;a9vB7uBsoZq87KMP5ANOgq&#43;zc8CCdMG6L&#43;saY="></script>
+  <script src="/js/highlight.9.18.1.b1c58829c55afcc1f568022af4b08ed8976da404d2990b7535bd8e19c0e3310c.js" integrity="sha256-scWIKcVa/MH1aAIq9LCO2JdtpATSmQt1Nb2OGcDjMQw="></script>
+  <script src="/js/highlightjs-line-numbers.2.7.0.min.ddfe282e07b7ec1ed069c23f92c7c8216ddb3f1879c4e962d37fd52adbd15a05.js" integrity="sha256-3f4oLge37B7QacI/ksfIIW3bPxh5xOli03/VKtvRWgU="></script><script>
+  hljs.initHighlightingOnLoad();
+  hljs.initLineNumbersOnLoad();
+  document.addEventListener('DOMContentLoaded', (event) => {
+    document.querySelectorAll('.codeinline').forEach((block) => {
+      hljs.highlightBlock(block);
+    });
+  });
+</script>
+
+</body>
+</html>
